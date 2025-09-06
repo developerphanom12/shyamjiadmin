@@ -1,0 +1,33 @@
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.main-section {
+  margin-left: 230px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+  height: 100vh;
+  overflow: auto;
+}
+
+.page-content {
+  flex: 1;
+  padding: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-section {
+    margin-left: 0;
+  }
+
+  .search-box {
+    width: 150px;
+  }
+}

@@ -1,0 +1,177 @@
+.quarterly-form {
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Heading styles */
+.form-heading {
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: 0%;
+  text-transform: capitalize;
+  color: #000000;
+  margin: 0;
+}
+
+.form-description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  margin-top: 7px;
+  margin-bottom: 0px;
+}
+
+/* ----------------------------------------------------------- */
+/* Yellow section title */
+.yellow-header {
+  position: relative;
+  padding: 5px 12px;
+  font-weight: 500;
+  color: white;
+  font-size: 28px;
+  background-color: #ffb400;
+  margin-top: 16px;
+  line-height: 36px;
+}
+
+.yellow-header .pattern-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+}
+
+.yellow-header span,
+.yellow-header label {
+  position: relative;
+  z-index: 1;
+}
+
+.yellow-header label {
+  color: #000000;
+  font-size: 23px;
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------- */
+
+/* Year input */
+.year-input {
+  width: 97%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* ----------------------------------------------- */
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field .form-label {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 0px;
+  margin-top: 5px;
+  margin-bottom: 3px;
+  color: #000;
+}
+.form-field .form-label span {
+  color: red;
+}
+.report-type-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.report-type-row select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #888;
+}
+
+.inventory select {
+  color: #888;
+}
+
+/* Upload field */
+
+.annual-upload-input {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #888;
+  background: #fff;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+.annual-upload-input input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.annual-upload-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* --------------------------------------------------- */
+
+.add-report-btn {
+  border: none;
+  background-color: white;
+  margin-top: 5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------- */
+.quater-btn-div{
+  text-align: right;
+}
+.add-quater-btn {
+  border: none;
+  background-color: white;
+  margin-top: 5px;
+  text-align: right;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+}
+
+/* ---------newspaper publication */
+.news-heading , .stock-table-heading {
+  font-family: Poppins;
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0%;
+  text-transform: capitalize;
+}
+.stock-table-heading{
+  margin-bottom: 0px;
+}

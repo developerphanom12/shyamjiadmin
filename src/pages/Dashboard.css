@@ -1,0 +1,80 @@
+/* main page */
+.dashboard {
+  padding: 30px;
+}
+
+/* heading */
+.dashboard h2 {
+  font-family: Poppins;
+  font-weight: 500;
+  padding-top: 30px;
+  font-size: 24px;
+  line-height: 24px;
+  text-transform: capitalize;
+}
+
+/* card grid */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+}
+
+/* card layout */
+.card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s;
+  max-width: 200px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* left side text */
+.card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card h4 {
+font-family: Poppins;
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+line-height: 26px;
+letter-spacing: 0%;
+text-transform: capitalize;
+margin: 0;
+}
+
+.card p {
+  font-size: 30px;
+  font-weight: 500;
+  color: #000;
+  margin: 0;
+}
+
+/* icon style */
+.icon-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E24F14 0%, #FFE07D 100%);
+  border: 1px solid #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svg-icon {
+  width: 20px;
+  height: 20px;
+}

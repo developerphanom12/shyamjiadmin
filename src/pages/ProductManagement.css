@@ -1,0 +1,241 @@
+/* Container */
+.product-management-container {
+  padding: 30px;
+  background-color: #f5f6fa;
+  padding-top: 60px;
+}
+
+/* Top Header */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.top-header h2 {
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: 0%;
+  text-transform: capitalize;
+  color: #000000;
+}
+
+/* Add Product Button */
+.add-product-button {
+  padding: 10px 20px;
+  background-color: #ffeb3b;
+  color: #000;
+  font-weight: 600;
+  border: 1px solid #000;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-product-button:hover {
+  background-color: #fdd835;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Card */
+.main-card {
+  background-color: #fff;
+  padding: 10px 20px 20px 20px;
+  border-radius: 12px;
+  border: 1px solid #e4e4e4;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.product-management-header h3 {
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: 0%;
+  text-transform: capitalize;
+  color: #000000;
+}
+
+.product-management-header p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* --------------------------------------------------------------------------- */
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: separate;
+  /* Allow individual cell borders */
+  border-spacing: 0;
+}
+
+.product-table th,
+.product-table td {
+  padding: 0px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.product-table td {
+  width: 267.5px;
+  height: 77px;
+  color: #000000;
+  font-family: Poppins;
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 14px;
+  line-height: 21.3px;
+  letter-spacing: 0%;
+}
+
+.product-table th {
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 14px;
+  line-height: 21.3px;
+  letter-spacing: 0%;
+  width: 267.5px;
+  height: 44px;
+  background-color: #fafafa;
+  color: #999;
+  font-weight: 500;
+  border-top: 1px solid #F6F6F7;
+}
+
+/* Reset all cell borders first */
+.product-table td,
+.product-table th {
+  border: none;
+}
+
+/* Column 1 */
+.product-table td:nth-child(1),
+.product-table th:nth-child(1) {
+  border-style: solid;
+  border-width: 0px 1px 1px 1px;
+  border-color: #F6F6F7;
+}
+
+/* Columns 2–4 */
+.product-table td:nth-child(2),
+.product-table th:nth-child(2),
+.product-table td:nth-child(3),
+.product-table th:nth-child(3),
+.product-table td:nth-child(4),
+.product-table th:nth-child(4) {
+  border-style: solid;
+  border-width: 1px 1px 1px 0px;
+  border-color: #F6F6F7;
+}
+
+/* Product Image Styling */
+.product-table img {
+  width: 49px;
+  height: 57px;
+  border-radius: 3px;
+}
+
+/* Actions */
+.product-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.product-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 14px;
+  line-height: 21.3px;
+  letter-spacing: 0%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.product-actions button:hover {
+  color: #ff6a00;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bottom Controls */
+.bottom-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  font-size: 15px;
+  color: #555;
+  padding: 0 5px;
+}
+
+/* Dropdown */
+.bottom-controls select {
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------ */
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button.active {
+  border: 1px solid #000000;
+  border-radius: 6px;
+}
+
+.pagination button:hover:not(.active) {
+  background-color: #f0f0f0;
+}
+
+/* Arrows */
+.arrow-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.arrow-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.arrow-button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
