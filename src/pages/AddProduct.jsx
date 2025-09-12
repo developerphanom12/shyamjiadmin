@@ -22,6 +22,14 @@ const AddProduct = () => {
     categories: "",
     colorCode: "",
     image: null,
+    leftBgImage: null,
+    rightBgImage: null,
+    leftFooterImage: null,
+    rightFooterImage: null,
+    leftBgImagePreview: "",
+    rightBgImagePreview: "",
+    leftFooterImagePreview: "",
+    rightFooterImagePreview: "",
     previewImage: "",
     rating: 0,
     label: "best",
@@ -162,7 +170,108 @@ const AddProduct = () => {
               </div>
 
               {/* Form Grid */}
-              <div className="form-grid">
+              <div className="grid-images">
+                <div className="image-wrapper">
+
+                {/* Left BG Image */}
+                <div>
+                  <label htmlFor="leftBgImageInput"> Left BG Image</label>
+                  <div className="product-image" onClick={() => document.getElementById("leftBgImageInput").click()}>
+                    {values.leftBgImagePreview ? (
+                      <img src={values.leftBgImagePreview} alt="Left BG" />
+                    ) : (
+                      <div className="no-image">Left BG Image</div>
+                    )}
+                    <input
+                      id="leftBgImageInput"
+                      type="file"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setFieldValue("leftBgImage", file);
+                          setFieldValue("leftBgImagePreview", URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="rightBgImageInput"> Right BG Image</label>
+                  {/* Right BG Image */}
+                  <div className="product-image" onClick={() => document.getElementById("rightBgImageInput").click()}>
+                    {values.rightBgImagePreview ? (
+                      <img src={values.rightBgImagePreview} alt="Right BG" />
+                    ) : (
+                      <div className="no-image">Right BG Image</div>
+                    )}
+                    <input
+                      id="rightBgImageInput"
+                      type="file"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setFieldValue("rightBgImage", file);
+                          setFieldValue("rightBgImagePreview", URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="leftFooterImageInput"> Left Footer Image</label>
+                  {/* Left Footer Image */}
+                  <div className="product-image" onClick={() => document.getElementById("leftFooterImageInput").click()}>
+                    {values.leftFooterImagePreview ? (
+                      <img src={values.leftFooterImagePreview} alt="Left Footer" />
+                    ) : (
+                      <div className="no-image">Left Footer Image</div>
+                    )}
+                    <input
+                      id="leftFooterImageInput"
+                      type="file"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setFieldValue("leftFooterImage", file);
+                          setFieldValue("leftFooterImagePreview", URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="rightFooterImageInput"> Right Footer Image</label>
+                  {/* Right Footer Image */}
+                  <div className="product-image" onClick={() => document.getElementById("rightFooterImageInput").click()}>
+                    {values.rightFooterImagePreview ? (
+                      <img src={values.rightFooterImagePreview} alt="Right Footer" />
+                    ) : (
+                      <div className="no-image">Right Footer Image</div>
+                    )}
+                    <input
+                      id="rightFooterImageInput"
+                      type="file"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setFieldValue("rightFooterImage", file);
+                          setFieldValue("rightFooterImagePreview", URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                </div>
+
+
+
                 {/* Categories */}
                 <div className="form-field full-width">
                   <label>Categories</label>
@@ -256,7 +365,6 @@ const AddProduct = () => {
                   <ErrorMessage name="advantages" component="div" className="error" />
                 </div>
 
-                {/* Color Code */}
                 {/* Color Code */}
                 <div className="form-field full-width">
                   <div className="flex">

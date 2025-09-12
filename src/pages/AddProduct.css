@@ -238,3 +238,61 @@
   flex-direction: row;
   gap: 5px;
 }
+
+.grid-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns */
+  gap: 15px;
+  width: 100%;
+}
+
+.grid-images .image-wrapper {
+  grid-column: span 2; /* full width (like col-span-3) */
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap; /* for responsiveness */
+}
+
+.grid-images .product-image {
+  flex: 1 1 calc(25% - 15px); /* 4 equal cards inside row */
+  min-width: 150px;           /* prevents too small cards */
+  max-width: 250px;           /* optional */
+  height: 200px;              /* adjust as needed */
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.grid-images .product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive: on smaller screens stack cards */
+@media (max-width: 768px) {
+  .grid-images .image-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .grid-images .product-image {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.no-image {
+  width: 136px;
+  height: 136px;
+  /* border: 1px dashed #ccc; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #999;
+  border-radius: 6px;
+}

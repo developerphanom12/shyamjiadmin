@@ -73,8 +73,8 @@ const useBlogs = () => {
   const updateBlog = async (id, data)=>{
     try {
       const res = await fetchData({
-        method: "PUT",
-        url: `${conf.apiBaseUrl}blogs/${id}`,
+        method: "POST",
+        url: `${conf.apiBaseUrl}blogs/${id}?_method=PUT`,
         data,
       });
       if (res.success) {
