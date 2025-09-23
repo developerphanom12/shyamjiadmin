@@ -28,7 +28,7 @@ function AdminLayout() {
       <Sidebar />
       <div className="main-section">
         <Navbar />
-        <div className="page-content">
+        <div className="page-content" style={{marginTop: "20px"}}>
           <Outlet /> {/* Child routes render here */}
         </div>
       </div>

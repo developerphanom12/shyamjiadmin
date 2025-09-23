@@ -7,7 +7,7 @@ import distributorIcon from '../assets/distributor.svg';
 function Dashboard() {
   return (
     <div className="dashboard">
-      <h2>Welcome Back, Admin!</h2>
+      <h2 style={{marginBottom: "20px"}}>Welcome Back, Admin!</h2>
       <div className="stats">
         <div className="card">
           <div className="card-text">
