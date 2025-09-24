@@ -39,7 +39,7 @@ const Newsletter = () => {
 //   console.log("newsLetterList", newsLetterList);
 
   return (
-    <div className="Newsletter-page">
+    <div className="Newsletter-page p-5 sm:p-[20px] sm:pt-16 ">
       <h2 className="news-title">Welcome Back, Admin!</h2>
 
       <div className="news-card">

@@ -49,7 +49,7 @@ const ProductManagement = () => {
     : [];
 
   return (
-    <div className="product-management-container">
+    <div className="product-management-container p-5 sm:p-[20px] sm:pt-16">
       {/* Top Header */}
       <div className="top-header">
         <h2>Welcome Back, Admin!</h2>

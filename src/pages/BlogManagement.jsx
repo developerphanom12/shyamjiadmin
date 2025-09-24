@@ -48,7 +48,7 @@ const BlogManagement = () => {
     : [];
 
   return (
-    <div className="blog-management-container">
+    <div className="blog-management-container p-5 sm:p-[20px] sm:pt-16">
       {/* Top Header */}
       <div className="blog-top-header">
         <h2>Welcome Back, Admin!</h2>

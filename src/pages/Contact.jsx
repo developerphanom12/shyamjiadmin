@@ -21,7 +21,7 @@ const Contact = () => {
   if (!contactDetails) return <p>Loading...</p>;
 
   return (
-    <div className="contact-page">
+    <div className="contact-page p-5 sm:p-[20px] sm:pt-16">
       {/* Header */}
       <div className="contact-header">
         <h2 className="contact-title">Welcome Back, Admin!</h2>

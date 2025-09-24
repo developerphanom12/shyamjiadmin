@@ -1,0 +1,110 @@
+/* Container for mobile navbar */
+.mobile-navbar {
+  display: block;
+}
+
+/* Hide on medium screens and above (>=768px) */
+@media (min-width: 768px) {
+  .mobile-navbar {
+    display: none;
+  }
+}
+
+/* Top Navbar */
+.navbar-top {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 40;
+  transition: opacity 0.3s;
+}
+
+/* sidebarrr */
+.sidebarrr {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 16rem; /* 64 in Tailwind = 16rem */
+  background-color: white;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+}
+
+/* sidebarrr header */
+.sidebarrr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 1rem; */
+}
+
+.sidebarrr-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937; /* gray-800 */
+}
+
+.close-btn {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background-color: #e5e7eb; /* gray-200 */
+}
+
+.close-btn svg {
+  color: #374151; /* gray-700 */
+}
+
+/* Navigation links */
+.sidebarrr-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.sidebarrr-nav a,
+.sidebarrr-nav button {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 500;
+  color: #1f2937; /* gray-800 */
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.sidebarrr-nav a:hover {
+  color: #2563eb; /* blue-600 */
+}
+
+.logout-btn {
+  color: #ef4444; /* red-500 */
+}
+
+.logout-btn:hover {
+  color: #dc2626; /* red-600 */
+}

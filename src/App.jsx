@@ -20,6 +20,7 @@ import LoginPage from "./components/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import EditProduct from "./pages/EditProducts";
 import EditBlog from "./pages/EditBlog";
+import MobileNavbar from "./components/MobileNavbar";
 
 // Layout for all authenticated pages
 function AdminLayout() {
@@ -27,8 +28,9 @@ function AdminLayout() {
     <div className="app">
       <Sidebar />
       <div className="main-section">
+        <MobileNavbar />
         <Navbar />
-        <div className="page-content" style={{marginTop: "20px"}}>
+        <div className="page-content sm:p-[20px] sm:mt-[20px]" >
           <Outlet /> {/* Child routes render here */}
         </div>
       </div>

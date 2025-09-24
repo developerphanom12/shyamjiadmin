@@ -24,7 +24,7 @@ import Committees from '../components/investorForms/Committees';
 
 const InvestorRelations = () => {
   return (
-    <div className="investor-page">
+    <div className="investor-page p-5 sm:p-[20px] sm:pt-16">
       <div className="investor-header">
         <h2>Welcome Back, Admin!</h2>
         <button className="update-button">

@@ -3,8 +3,9 @@ import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import './AddBlog.css';
 import upload from '../assets/upload.svg';
-import { Editor } from '@tinymce/tinymce-react';
+// import { Editor } from '@tinymce/tinymce-react';
 import useBlogs from '../hooks/blogs/useBlogs';
+import JoditEditor from "jodit-react";
 
 const AddBlog = () => {
   const navigate = useNavigate();
@@ -117,29 +118,27 @@ const AddBlog = () => {
             </div>
 
             {/* Description */}
-            <div className="form-group">
-              <label>Description</label>
-              <Editor
-                apiKey="lvrlrcqjgu0x83amssn032svvfj3cof1640bfseih7p0w7a5"
-                value={values.description}
-                init={{
-                  height: 400,
-                  menubar: false,
-                  statusbar: false,
-                  plugins: [
-                    'advlist autolink lists link image charmap preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table paste code help wordcount'
-                  ],
-                  toolbar:
-                    'undo redo | formatselect | bold italic underline forecolor | ' +
-                    'alignleft aligncenter alignright alignjustify | ' +
-                    'bullist numlist outdent indent | removeformat | help'
-                }}
-                onEditorChange={(content) => setFieldValue('description', content)}
-              />
-              <ErrorMessage name="description" component="div" className="error" />
-            </div>
+            {/* Description */}
+<div className="form-group">
+  <label>Description</label>
+  <JoditEditor
+    value={values.description}
+    config={{
+      readonly: false,
+      height: 400,
+      toolbarAdaptive: false,
+      buttons: [
+        "bold", "italic", "underline", "|",
+        "fontsize", "|",
+        "ul", "ol", "|",
+        "align", "undo", "redo"
+      ]
+    }}
+    onBlur={(newContent) => setFieldValue("description", newContent)}
+  />
+  <ErrorMessage name="description" component="div" className="error" />
+</div>
+
 
             {/* FAQ Section */}
             <div className="faq-section">

@@ -1,6 +1,6 @@
 .contact-page {
-    padding: 40px;
-    padding-top: 60px;
+    /* padding: 40px;
+    padding-top: 60px; */
     background-color: #f5f6fa;
 }
 
@@ -9,6 +9,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+      margin-bottom: 20px;
+
 }
 
 .contact-title {

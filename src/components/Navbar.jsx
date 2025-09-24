@@ -19,7 +19,7 @@ function Navbar() {
   };
 
   return (
-    <div className="navbar">
+    <div className="navbar hidden md:flex">
 
       <div className="search-container">
         <span className="search-icon"><FiSearch /></span>

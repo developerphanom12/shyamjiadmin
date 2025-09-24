@@ -1,6 +1,6 @@
 .Newsletter-page {
-  padding: 40px;
-  padding-top: 60px;
+  /* padding: 40px;
+  padding-top: 60px; */
   background-color: #f5f6fa;
 }
 
@@ -12,6 +12,7 @@
   letter-spacing: 0%;
   text-transform: capitalize;
   color: #000000;
+  margin-bottom: 20px;
 }
 
 .news-card {
