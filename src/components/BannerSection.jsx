@@ -84,9 +84,9 @@ const BannerSection = ({ heading, endpoint }) => {
               </button>
             </div>
 
-            {(preview || bannerDetails?.image) && (
+            {(preview || bannerDetails?.image_url) && (
               <img
-                src={preview || bannerDetails?.image}
+                src={preview || bannerDetails?.image_url}
                 alt="Preview"
                 className="w-[700px] h-[195px] mt-4 rounded-lg border border-gray-200 object-cover"
               />

@@ -10,11 +10,12 @@ import useProducts from '../hooks/products/useProducts';
 const ProductManagement = () => {
   const navigate = useNavigate();
   const {fetchAllProducts , allProducts , deleteUser } = useProducts()
-  const [products, setProducts] = useState(allProducts?.products);
+  const [products, setProducts] = useState(allProducts?.products || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const totalPages = itemsPerPage ? Math.ceil(products.length / itemsPerPage) : 0;
+  const totalPages = itemsPerPage ? Math.ceil((products?.length || 0) / itemsPerPage) : 0;
+
   useEffect(()=>{
     fetchAllProducts()
   },[])
@@ -105,7 +106,7 @@ const ProductManagement = () => {
           </div>
 
           <div className="record-info">
-            Showing {currentProducts.length > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0} to {((currentPage - 1) * itemsPerPage + currentProducts.length)} out of {products.length} records
+            Showing {currentProducts?.length > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0} to {((currentPage - 1) * itemsPerPage + currentProducts?.length)} out of {products.length} records
           </div>
 
           {/* Pagination */}

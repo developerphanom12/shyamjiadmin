@@ -14,7 +14,7 @@ const Newsletter = () => {
   }, []);
 
   const totalPages = itemsPerPage
-    ? Math.ceil(newsLetterList.length / itemsPerPage)
+    ? Math.ceil((newsLetterList?.length || 0) / itemsPerPage)
     : 0;
 
   const handleItemsPerPageChange = (e) => {
@@ -30,7 +30,7 @@ const Newsletter = () => {
   };
 
   const currentSubscribers = itemsPerPage
-    ? newsLetterList.slice(
+    ? newsLetterList?.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
       )
