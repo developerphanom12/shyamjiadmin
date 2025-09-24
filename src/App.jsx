@@ -14,13 +14,14 @@ import Contact from "./pages/Contact";
 import AddContact from "./pages/AddContact";
 // import Supports from "./pages/Supports";
 import Banner from "./pages/Banner";
-import InvestorRelations from "./pages/InvestorRelations";
+// import InvestorRelations from "./pages/InvestorRelations";
 import Newsletter from "./pages/Newsletter";
 import LoginPage from "./components/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import EditProduct from "./pages/EditProducts";
 import EditBlog from "./pages/EditBlog";
 import MobileNavbar from "./components/MobileNavbar";
+import NewInvestorRelations from "./pages/NewInvestorRelations";
 
 // Layout for all authenticated pages
 function AdminLayout() {
@@ -59,7 +60,7 @@ function App() {
           <Route path="/contact/add-contact" element={<AddContact />} />
           {/* <Route path="/support" element={<Supports />} /> */}
           <Route path="/banner" element={<Banner />} />
-          <Route path="/investors/*" element={<InvestorRelations />} />
+          <Route path="/investors" element={<NewInvestorRelations />} />
           <Route path="/newsletter" element={<Newsletter />} />
         </Route>
            </Route>
