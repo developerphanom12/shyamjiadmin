@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { FaDownload, FaPlus, FaMinus, FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { FiX } from "react-icons/fi";
 
 const DisclosuresUnderRegulations = () => {
   const [data, setData] = useState([]);
@@ -48,7 +53,28 @@ const DisclosuresUnderRegulations = () => {
     ]);
   }, []);
 
+  const [showAddModel, setShowModel] = useState(false);
+  const [initialValues, setInitialValues] = useState({
+    title: "",
+    url: "",
+  });
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("Title is required"),
+    url: Yup.string().required("URL is required"),
+  });
+  const handleSubmit = (values) => {
+    console.log("Form Data:", values);
+    setShowModel(false);
+  };
+ 
+
+
   return (
+    <>
+    <div className="flex justify-end my-3">
+      <h4 onClick={() => setShowModel(true)} className="px-4 py-1 bg-[#FFAD00] rounded-sm  cursor-pointer">Add Disclosures</h4>
+    </div>
+    
     <div className="w-full max-w-6xl mx-auto">
       <div className="bg-white overflow-hidden border border-gray-200">
         <div className="overflow-x-auto">
@@ -61,8 +87,11 @@ const DisclosuresUnderRegulations = () => {
                 <th className="px-6 py-3 font-semibold text-gray-700 border-r border-gray-300">
                   Particulars as per LODR
                 </th>
-                <th className="px-6 py-3 font-semibold text-gray-700">
+                <th className="px-6 py-3 font-semibold text-gray-700 border-r border-gray-300">
                   URL
+                </th>
+                <th className="px-6 py-3 font-semibold text-gray-700">
+                  Action
                 </th>
               </tr>
             </thead>
@@ -80,7 +109,7 @@ const DisclosuresUnderRegulations = () => {
                   <td className="px-6 py-4 text-sm text-gray-800 border-r border-gray-300">
                     {disclosure.particulars}
                   </td>
-                  <td className="px-6 py-4 text-sm">
+                  <td className="px-6 py-4 text-sm border-r border-gray-300">
                     <a
                       href={disclosure.url}
                       target="_blank"
@@ -90,6 +119,16 @@ const DisclosuresUnderRegulations = () => {
                       {disclosure.url}
                     </a>
                   </td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex gap-3 text-lg text-gray-700">
+                      <button className="hover:text-blue-600">
+                        <FaEdit />
+                      </button>
+                      <button className="hover:text-red-600">
+                        <MdDelete />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -97,6 +136,78 @@ const DisclosuresUnderRegulations = () => {
         </div>
       </div>
     </div>
+
+     {
+            showAddModel && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+                <div className="bg-white w-[90%] max-h-[80vh] max-w-6xl rounded-xl shadow-lg p-6 overflow-y-auto relative">
+                  {/* Header */}
+                  <div className="flex justify-between items-center mb-6 pb-3">
+                    <h2 className="text-2xl font-bold text-gray-800">Add Report</h2>
+                    <button
+                      onClick={() => setShowModel(false)}
+                      className="p-2 rounded-full hover:bg-gray-100 transition"
+                    >
+                      <FiX size={22} className="text-gray-600" />
+                    </button>
+                  </div>
+    
+                  {/* Form */}
+                  <Formik
+                    initialValues={initialValues}
+                   validationSchema={validationSchema}
+                   onSubmit={handleSubmit}
+                  >
+                    {({ values, setFieldValue }) => (
+                      <Form style={{ flexDirection: "column" }} className="flex  gap-5">
+    
+    
+                        {/* Title */}
+                        <div>
+                          <label className="block mb-1 font-medium text-gray-700">Title</label>
+                          <Field
+                            type="text"
+                            name="title"
+                            placeholder="Enter title"
+                            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                          />
+                          <ErrorMessage
+                            name="title"
+                            component="div"
+                            className="text-red-500 text-sm mt-1"
+                          />
+                        </div>
+                        {/* url */}
+                        <div>
+                          <label className="block mb-1 font-medium text-gray-700">url</label>
+                          <Field
+                            type="text"
+                            name="url"
+                            placeholder="Enter url"
+                            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                          />
+                          <ErrorMessage
+                            name="url"
+                            component="div"
+                            className="text-red-500 text-sm mt-1"
+                          />
+                        </div>
+                  
+                        {/* Submit */}
+                        <button
+                          type="submit"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium"
+                        >
+                          Submit
+                        </button>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+            )
+          }
+    </>
   );
 };
 
