@@ -22,6 +22,9 @@ import EditProduct from "./pages/EditProducts";
 import EditBlog from "./pages/EditBlog";
 import MobileNavbar from "./components/MobileNavbar";
 import NewInvestorRelations from "./pages/NewInvestorRelations";
+import ContactQueries from "./pages/ContactQueries";
+import JobApplications from "./pages/JobApplications";
+import Distributors from "./pages/Distributors";
 
 // Layout for all authenticated pages
 function AdminLayout() {
@@ -62,6 +65,9 @@ function App() {
           <Route path="/banner" element={<Banner />} />
           <Route path="/investors" element={<NewInvestorRelations />} />
           <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/contact-queries" element={<ContactQueries />} />
+          <Route path="/job-applications" element={<JobApplications />} />
+          <Route path="/distributors" element={<Distributors />} />
         </Route>
            </Route>
       </Routes>

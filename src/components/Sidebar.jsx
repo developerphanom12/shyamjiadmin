@@ -8,6 +8,7 @@ import { FaPenNib, FaUsers } from 'react-icons/fa';
 // import { BiSupport } from 'react-icons/bi';
 import { RiImageEditLine } from 'react-icons/ri';
 import { IoNewspaperOutline } from 'react-icons/io5';
+import { BiSupport } from 'react-icons/bi';
 
 function Sidebar() {
   return (
@@ -45,19 +46,12 @@ function Sidebar() {
           </span>
         </NavLink>
 
-        <NavLink to="/investors" className={({ isActive }) => isActive ? "active" : ""}>
+         <NavLink to="/investors" className={({ isActive }) => isActive ? "active" : ""}>
           <span className="menu-item">
             <FaUsers className="icon" />
             Investor Relations
           </span>
         </NavLink>
-
-        {/* <NavLink to="/support" className={({ isActive }) => isActive ? "active" : ""}>
-          <span className="menu-item">
-            <BiSupport className="icon" />
-            Supports
-          </span>
-        </NavLink> */}
 
         <NavLink to="/banner" className={({ isActive }) => isActive ? "active" : ""}>
           <span className="menu-item">
@@ -70,6 +64,27 @@ function Sidebar() {
           <span className="menu-item">
             <IoNewspaperOutline className="icon" />
             Newsletter
+          </span>
+        </NavLink>
+
+        <NavLink to="/contact-queries" className={({ isActive }) => isActive ? "active" : ""}>
+          <span className="menu-item">
+            <BiSupport className="icon" />
+             Contact Queries
+          </span>
+        </NavLink>
+
+        <NavLink to="/job-applications" className={({ isActive }) => isActive ? "active" : ""}>
+          <span className="menu-item">
+            <BiSupport className="icon" />
+            Job Applications
+          </span>
+        </NavLink>
+
+        <NavLink to="/distributors" className={({ isActive }) => isActive ? "active" : ""}>
+          <span className="menu-item">
+            <BiSupport className="icon" />
+             Distributors
           </span>
         </NavLink>
       </nav>
