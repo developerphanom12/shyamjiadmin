@@ -1,6 +1,6 @@
 /* sidebar main container */
 .sidebar {
-    width: 230px;
+    width: 250px;
     background-color: #fff;
     height: 100vh;
     padding: 20px 10px;
@@ -33,7 +33,7 @@
 .nav-menu {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    /* gap: 8px; */
 }
 
 /* navigation menu links */
@@ -52,6 +52,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    
 }
 
 /* icon */

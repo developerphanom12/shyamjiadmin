@@ -7,8 +7,8 @@
   position: fixed;
   top: 0;
   right: 0;
-  left: 220px;
-  z-index: 100;
+  left: 250px;
+  z-index: 10;
 }
 
 /* input box container */
