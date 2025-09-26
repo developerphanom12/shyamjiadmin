@@ -81,7 +81,7 @@ const ShareHoldingPattern = () => {
     <>
 
       <div className="flex justify-end my-3">
-        <h4 onClick={() => setShowModel(true)} className="px-4 py-1 bg-[#FFAD00] rounded-sm  cursor-pointer">Add Rating</h4>
+        <h4 onClick={() => setShowModel(true)} className="px-4 py-1 bg-[#FFAD00] rounded-sm  cursor-pointer">Add Pattern</h4>
       </div>
 
       <div>

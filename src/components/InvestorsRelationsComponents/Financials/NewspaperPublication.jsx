@@ -62,9 +62,7 @@ const NewspaperPublication = () => {
 
   const initialValues = {
     title: "",
-    newspaperName: "",
-    date: "",
-    file: null,
+    reports: [{ newspaperName: "", date: "", file: null }],
   }
 
   const toggleCategory = (index) => {
@@ -171,7 +169,7 @@ const NewspaperPublication = () => {
   // validationSchema={validationSchema} 
   // onSubmit={handleSubmit}
 >
-  {({ setFieldValue }) => (
+  {({ setFieldValue, values }) => (
     <Form style={{flexDirection:"column"}} className="flex flex-col gap-5">
       {/* Title */}
       <div>
@@ -189,19 +187,28 @@ const NewspaperPublication = () => {
         />
       </div>
 
-      {/* Newspaper Name */}
+       {/* Reports */}
+                          <FieldArray name="reports">
+                            {({ push, remove }) => (
+                              <div style={{ flexDirection: "column" }} className="flex flex-col gap-4">
+                                {values.reports.map((_, index) => (
+                                  <div
+                                    key={index}
+                                    className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                                  >
+                                    {/* Newspaper Name */}
       <div>
         <label className="block mb-1 font-medium text-gray-700">
           Newspaper Name
         </label>
         <Field
           type="text"
-          name="newspaperName"
+          name={`reports.${index}.newspaperName`}
           placeholder="Enter newspaper name"
           className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
         />
         <ErrorMessage
-          name="newspaperName"
+          name={`reports.${index}.newspaperName`}
           component="div"
           className="text-red-500 text-sm mt-1"
         />
@@ -212,18 +219,71 @@ const NewspaperPublication = () => {
         <label className="block mb-1 font-medium text-gray-700">Date</label>
         <Field
           type="date"
-          name="date"
+          name={`reports.${index}.date`}
           className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
         />
         <ErrorMessage
-          name="date"
+          name={`reports.${index}.date`}
           component="div"
           className="text-red-500 text-sm mt-1"
         />
       </div>
+                                    
+      
+                                    {/* File Upload */}
+                                    <div>
+                                      <label className="block mb-1 font-medium text-gray-700">
+                                        Upload File (PDF)
+                                      </label>
+                                      <input
+                                        type="file"
+                                        // accept="application/pdf"
+                                        onChange={(event) =>
+                                          setFieldValue(
+                                            `reports.${index}.file`,
+                                            event.currentTarget.files[0]
+                                          )
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                                      />
+                                      <ErrorMessage
+                                        name={`reports.${index}.file`}
+                                        component="div"
+                                        className="text-red-500 text-sm mt-1"
+                                      />
+                                    </div>
+      
+                                    {/* Remove Button */}
+                                    {index > 0 && (
+                                      <button
+                                        type="button"
+                                        className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                                        onClick={() => remove(index)}
+                                      >
+                                        Remove
+                                      </button>
+                                    )}
+                                  </div>
+                                ))}
+                                {/* Add More */}
+                                <button
+                                  type="button"
+                                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit "
+                                  onClick={() => push({ type: "", file: null })}
+                                >
+                                  + Add More
+                                </button>
+      
+                              </div>
+                            )}
+                          </FieldArray>
+
+     
+
+      
 
       {/* File Upload */}
-      <div>
+      {/* <div>
         <label className="block mb-1 font-medium text-gray-700">
           Upload File (PDF)
         </label>
@@ -240,7 +300,7 @@ const NewspaperPublication = () => {
           component="div"
           className="text-red-500 text-sm mt-1"
         />
-      </div>
+      </div> */}
 
       {/* Submit */}
       <button
