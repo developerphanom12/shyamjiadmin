@@ -34,7 +34,7 @@ export default function JobApplications() {
 
   const getApplications = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (!token) return console.log("No token found, please login first.");
 
       const res = await axios.get(
@@ -48,7 +48,7 @@ export default function JobApplications() {
   };
 
   const deleteApplication = async (id) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -77,7 +77,7 @@ export default function JobApplications() {
   // Mark as read
   const markAsRead = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (!token) return console.log("No token found, please login first.");
 
       const response = await axios.patch(
