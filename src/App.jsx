@@ -29,7 +29,7 @@ import Distributors from "./pages/Distributors";
 // Layout for all authenticated pages
 function AdminLayout() {
   return (
-    <div className="app">
+    <div className="app ">
       <Sidebar />
       <div className="main-section">
         <MobileNavbar />

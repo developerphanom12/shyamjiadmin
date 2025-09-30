@@ -29,6 +29,33 @@ const useMessages= () => {
     }
   };
 
+ const markAsRead = async (id) => {
+  try {
+    const res = await fetchData({
+      method: "PATCH",
+      url: `${conf.apiBaseUrl}admin/contactus/${id}`,
+      data: {  // ✅ Yeh add karna important hai
+        reviewed: true,
+        // status: "read"
+      }
+    });
+    
+    if (res) {
+      // Success message
+      toast.success("Marked as read successfully!");
+      fetchAllMessages()
+      return true;
+    } else {
+      toast.error(res?.message || "Failed to mark as read");
+      return false;
+    }
+  } catch (error) {
+    console.error("Mark as read error:", error);
+    toast.error("Network error occurred");
+    return false;
+  }
+};
+
   const deleteMessage = async (id) => {
     const result = await confirmAlert(
       "Do you really want to delete this Message ?"
@@ -55,7 +82,7 @@ const useMessages= () => {
       }
     }
   };
-  return { messages, loading, fetchAllMessages, deleteMessage };
+  return { messages, loading, fetchAllMessages, deleteMessage , markAsRead };
 };
 
 export default useMessages;

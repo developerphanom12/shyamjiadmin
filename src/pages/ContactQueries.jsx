@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaEdit } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaCircle, FaEdit } from "react-icons/fa";
 import useMessages from "../hooks/message/useMessage";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
 
 export default function ContactQueries() {
   // Dummy data (30 rows)
@@ -20,7 +20,7 @@ export default function ContactQueries() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openDropdown, setOpenDropdown] = useState(false);
-  const { messages, loading, fetchAllMessages, deleteMessage } = useMessages();
+  const { messages, loading, fetchAllMessages, deleteMessage , markAsRead } = useMessages();
 
   useEffect(() => {
     fetchAllMessages();
@@ -63,10 +63,13 @@ export default function ContactQueries() {
         </p>
 
         {/* Table */}
-        <div className="overflow-x-auto md:overflow-hidden">
+        <div className="overflow-x-auto ">
           <table className="w-full border border-[#F6F6F7] rounded-lg text-sm border-collapse">
             <thead className="bg-[#FFFFFF] text-[#A2A1A8]">
               <tr>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                  Status
+                </th>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Name
                 </th>
@@ -88,8 +91,8 @@ export default function ContactQueries() {
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Subject
                 </th>
-                <th className="px-4 py-2 text-left">Message</th>
-                <th className="px-4 py-2">Action</th>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">Message</th>
+                <th className="px-4 py-2 ">Action</th>
 
               </tr>
             </thead>
@@ -99,6 +102,18 @@ export default function ContactQueries() {
                   key={row.id}
                   className="border-t-2 border-[#F6F6F7] text-[#000000] font-semibold"
                 >
+
+                  <td className="flex justify-center items-center mt-3  ">
+                    {row.reviewed === 1 ? (
+                      // <span className="" title="Read">🟢</span>
+                      <FaCircle className="text-green-500" />
+                    ) : (
+                      // <span className="" ></span>
+                      <FaCircle className="text-red-500 " />
+
+                    )}
+                  </td>
+
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.name}
                   </td>
@@ -121,13 +136,16 @@ export default function ContactQueries() {
                     {row.subject}
                   </td>
                   <td className="px-4 py-2">{row.message}</td>
-                  <td className="p-2 border border-gray-300">
+                  <td className="p-2 border-l border-gray-100">
                     <div className="px-6  flex justify-center">
-                      <button className="hover:text-blue-600">
-                        <FaEdit />
+                      <button onClick={()=> markAsRead(row.id)} className="hover:text-blue-600 text-xl cursor-pointer">
+                        {
+                          row.reviewed === 1 ?  <MdMarkEmailRead />:<MdMarkEmailUnread />
+                        }
+                        {/* <FaEdit /> */}
                       </button>
-                      <button className="hover:text-red-600" 
-                      onClick={() => deleteMessage(row.id)}>
+                      <button className="hover:text-red-600 text-xl cursor-pointer"
+                        onClick={() => deleteMessage(row.id)}>
                         <MdDelete />
                       </button>
                     </div>
@@ -195,8 +213,8 @@ export default function ContactQueries() {
                 key={num}
                 onClick={() => setCurrentPage(num)}
                 className={`px-3 py-1 rounded  ${currentPage === num
-                    ? "border border-[#000000] text-black font-semibold"
-                    : " text-black font-semibold"
+                  ? "border border-[#000000] text-black font-semibold"
+                  : " text-black font-semibold"
                   }`}
               >
                 {num}

@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaChevronLeft, FaChevronRight, FaEdit } from "react-icons/fa";
+import useDistributor from "../hooks/distributor/useDistributor";
+import { MdDelete, MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
+import { FaCircle } from "react-icons/fa";
+
 
 export default function Distributos() {
   // Dummy data (60 rows)
@@ -23,13 +27,18 @@ export default function Distributos() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const {fetchAllDistributor , distributor , deleteDistributor , markAsRead} = useDistributor()
+
+  useEffect(()=>{
+    fetchAllDistributor()
+  },[])
 
 
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
-  const currentItems = data.slice(indexOfFirst, indexOfLast);
+  const currentItems = distributor?.slice(indexOfFirst, indexOfLast);
 
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const totalPages = Math.ceil(distributor?.length / rowsPerPage);
 
 //   const handleRowsChange = (e) => {
 //     setRowsPerPage(Number(e.target.value));
@@ -72,6 +81,9 @@ export default function Distributos() {
             <thead className="bg-[#FFFFFF] text-[#A2A1A8]">
               <tr>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                  Status
+                </th>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Name
                 </th>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
@@ -108,11 +120,21 @@ export default function Distributos() {
                   key={row.id}
                   className="border-t-2 border-[#F6F6F7] text-[#000000] font-semibold"
                 >
+                  <td className="flex justify-center items-center mt-3  ">
+                    {row.reviewed === 1 ? (
+                      // <span className="" title="Read">🟢</span>
+                      <FaCircle className="text-green-500" />
+                    ) : (
+                      // <span className="" ></span>
+                      <FaCircle className="text-red-500 " />
+
+                    )}
+                  </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.name}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    {row.firm}
+                    {row.firm_name}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.state}
@@ -124,10 +146,10 @@ export default function Distributos() {
                     {row.town}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    {row.brand}
+                    {row.brand_name}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    {row.phone}
+                    {row.mobile_number}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.email}
@@ -136,6 +158,17 @@ export default function Distributos() {
                     {row.gstin}
                   </td>
                   <td className="px-4 py-2">{row.message}</td>
+                  <td className="p-2 border border-gray-300">
+                                      <div className="px-6  flex justify-center">
+                                        <button onClick={()=> markAsRead(row.id)} className="hover:text-blue-600 text-xl cursor-pointer">
+                                          {row.reviewed === 1 ?  <MdMarkEmailRead/>:<MdMarkEmailUnread/>}
+                                        </button>
+                                        <button className="hover:text-red-600 text-xl cursor-pointer" 
+                                        onClick={() => deleteDistributor(row.id)}>
+                                          <MdDelete />
+                                        </button>
+                                      </div>
+                                    </td>
                   
                 </tr>
               ))}
