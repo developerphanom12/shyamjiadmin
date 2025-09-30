@@ -29,12 +29,20 @@ const Newsletter = () => {
     }
   };
 
+  // const currentSubscribers = itemsPerPage
+  //   ? newsLetterList?.slice(
+  //       (currentPage - 1) * itemsPerPage,
+  //       currentPage * itemsPerPage
+  //     )
+  //   : [];
+
   const currentSubscribers = itemsPerPage
-    ? newsLetterList?.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
-    : [];
+  ? (Array.isArray(newsLetterList) ? newsLetterList : []).slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
+  : [];
+
 
 //   console.log("newsLetterList", newsLetterList);
 
