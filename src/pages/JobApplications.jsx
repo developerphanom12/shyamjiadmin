@@ -1,20 +1,13 @@
-import { useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { FaEye, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { MdDelete, MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
+import Swal from "sweetalert2";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function JobApplications() {
-  // Dummy data (48 rows)
-  const data = Array.from({ length: 48 }).map((_, idx) => ({
-    id: idx + 1,
-    name: `Name ${idx + 1}`,
-    email: `user${idx + 1}@gmail.com`,
-    phone: "0000000000",
-    dept: "XYZ",
-    town: "Downtown",
-    salary: "Rs 20,000",
-  }));
-
-  // States
+  const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -22,10 +15,8 @@ export default function JobApplications() {
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentItems = data.slice(indexOfFirst, indexOfLast);
-
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
-  // Pagination buttons logic (show max 4 buttons)
   const maxPageButtons = 4;
   let startPage = Math.max(currentPage - Math.floor(maxPageButtons / 2), 1);
   let endPage = startPage + maxPageButtons - 1;
@@ -34,23 +25,99 @@ export default function JobApplications() {
     startPage = Math.max(endPage - maxPageButtons + 1, 1);
   }
   const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
+  for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
 
   const rowOptions = [7, 10, 20];
 
+  // Login + fetch applications
+  const loginAdmin = async () => {
+    try {
+      const res = await axios.post(
+        "https://shyamg-api.desginersandme.com/public/api/admin/login",
+        { email: "shrayansh@gmail.com", password: "12345678" }
+      );
+      const token = res.data.token;
+      localStorage.setItem("token", token);
+      getApplications();
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+
+  const getApplications = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return console.log("No token found, please login first.");
+
+      const res = await axios.get(
+        "https://shyamg-api.desginersandme.com/public/api/admin/applications?per_page=20",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // By default unread
+      setData(
+        res.data.data.map((item) => ({
+          ...item,
+          isRead: false,
+        }))
+      );
+    } catch (error) {
+      console.log("Applications not fetched", error);
+    }
+  };
+
+  const deleteApplication = async (id) => {
+    const token = localStorage.getItem("token");
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(
+          `https://shyamg-api.desginersandme.com/public/api/admin/applications/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setData((prev) => prev.filter((item) => item.id !== id));
+        Swal.fire("Deleted!", "Application has been deleted.", "success");
+      } catch (error) {
+        console.error("Delete failed", error);
+        Swal.fire("Error!", "Failed to delete application.", "error");
+      }
+    }
+  };
+
+  // Mark as read
+  const markAsRead = (id) => {
+    setData((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, isRead: true } : item
+      )
+    );
+    toast.success("Marked as read successfully", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+  };
+
+  useEffect(() => {
+    loginAdmin();
+  }, []);
+
   return (
-    //<div className="w-full min-h-screen bg-[#F5F7F9] flex items-center justify-center p-4">
     <div className="w-full p-3 md:p-5 mt-[50px] ">
-      {/* Welcome Title */}
+      <ToastContainer />
       <h1 className="text-2xl font-semibold text-gray-800 mb-4">
         Welcome Back, Admin!
       </h1>
 
-      {/* Career Section Wrapper */}
       <div className="bg-[#FFFFFF] border border-gray-200 rounded-lg p-4 shadow-[#00000040]">
-        {/* Section Heading */}
         <h2 className="text-xl font-semibold text-[#000000]">
           Career With Shyam-G
         </h2>
@@ -58,11 +125,13 @@ export default function JobApplications() {
           Detailed Product Records For Quick Updates And Monitoring.
         </p>
 
-        {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full border border-[#F6F6F7] rounded-lg text-sm border-collapse">
             <thead className="bg-[#FFFFFF] text-[#A2A1A8]">
               <tr>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                  Status
+                </th>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Name
                 </th>
@@ -82,54 +151,90 @@ export default function JobApplications() {
                   Town
                 </th>
                 <th className="px-4 py-2 text-left">Expected Salary</th>
+                <th className="px-4 py-2 text-left">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {currentItems.map((row) => (
                 <tr
                   key={row.id}
                   className="border-t-2 border-[#F6F6F7] text-[#000000] font-semibold"
                 >
+                  {/* Status */}
+                  <td className="px-4 py-2 border-r border-[#F6F6F7]">
+                    <span
+                      className={`h-3 w-3 inline-block rounded-full ${
+                        row.isRead ? "bg-green-600" : "bg-red-500"
+                      }`}
+                    ></span>
+                  </td>
+
+                  {/* Name */}
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.name}
                   </td>
+
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.email}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    {row.phone}
+                    {row.mobile_number}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    <button className="bg-[#FFAD00] text-white p-2 rounded-md">
-                      <FaEye />
-                    </button>
+                    {row.resume_path ? (
+                      <a
+                        href={row.resume_path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#FFAD00] text-white p-2 rounded-md inline-block"
+                      >
+                        <FaEye />
+                      </a>
+                    ) : (
+                      <span className="text-gray-400">No Resume</span>
+                    )}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    {row.dept}
+                    {row.department}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     {row.town}
                   </td>
-                  <td className="px-4 py-2">{row.salary}</td>
+                  <td className="px-4 py-2">{row.expected_salary}</td>
+
+                  {/* Action: Unread -> Read + Delete */}
+                  <td className="p-2 border border-gray-300">
+                    <div className="flex justify-center gap-2">
+                      {!row.isRead && (
+                        <MdMarkEmailUnread
+                          className="cursor-pointer"
+                          onClick={() => markAsRead(row.id)}
+                        />
+                      )}
+                      {row.isRead && <MdMarkEmailRead className="cursor-pointer" />}
+                      <MdDelete
+                        className="text-gray-700 cursor-pointer"
+                        onClick={() => deleteApplication(row.id)}
+                      />
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Pagination (unchanged) */}
         <div className="flex flex-col md:flex-row justify-between items-center mt-4 text-sm text-gray-600 gap-3">
-          {/* Left - Rows per page (Custom Dropdown) */}
           <div className="flex items-center gap-2 relative">
             <span className="text-[#A2A1A8] ">Showing:</span>
-
             <button
               onClick={() => setOpenDropdown(!openDropdown)}
               className="border border-gray-300 rounded-md px-3 py-1 text-sm text-black bg-white"
             >
               {rowsPerPage}
             </button>
-
             {openDropdown && (
               <div className="absolute left-full bottom-0 ml-2 bg-white border border-gray-300 rounded-md shadow-md z-10">
                 {rowOptions.map((opt) => (
@@ -151,16 +256,14 @@ export default function JobApplications() {
             )}
           </div>
 
-          {/* Center - Info */}
           <div className="text-[#A2A1A8]">
             Showing <span className="font-semibold">{indexOfFirst + 1}</span> to{" "}
             <span className="font-semibold">
-              {Math.min(indexOfLast, data.length)}
+              {Math.min(indexOfFirst + rowsPerPage, data.length)}
             </span>{" "}
             out of <span className="font-semibold">{data.length}</span> records
           </div>
 
-          {/* Right - Pagination Controls */}
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -169,7 +272,6 @@ export default function JobApplications() {
             >
               <FaChevronLeft />
             </button>
-
             {pageNumbers.map((num) => (
               <button
                 key={num}
@@ -183,7 +285,6 @@ export default function JobApplications() {
                 {num}
               </button>
             ))}
-
             <button
               onClick={() =>
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
@@ -196,8 +297,6 @@ export default function JobApplications() {
           </div>
         </div>
       </div>
-      {/* End Career Section */}
     </div>
-    //</div>
   );
 }
