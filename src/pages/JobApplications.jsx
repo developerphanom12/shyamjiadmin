@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function JobApplications() {
   const [data, setData] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -30,19 +31,6 @@ export default function JobApplications() {
   const rowOptions = [7, 10, 20];
 
   // Login + fetch applications
-  const loginAdmin = async () => {
-    try {
-      const res = await axios.post(
-        "https://shyamg-api.desginersandme.com/public/api/admin/login",
-        { email: "shrayansh@gmail.com", password: "12345678" }
-      );
-      const token = res.data.token;
-      localStorage.setItem("token", token);
-      getApplications();
-    } catch (error) {
-      console.error("Login failed", error);
-    }
-  };
 
   const getApplications = async () => {
     try {
@@ -53,14 +41,7 @@ export default function JobApplications() {
         "https://shyamg-api.desginersandme.com/public/api/admin/applications?per_page=20",
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      // By default unread
-      setData(
-        res.data.data.map((item) => ({
-          ...item,
-          isRead: false,
-        }))
-      );
+      setData(res.data.data);
     } catch (error) {
       console.log("Applications not fetched", error);
     }
@@ -94,20 +75,44 @@ export default function JobApplications() {
   };
 
   // Mark as read
-  const markAsRead = (id) => {
-    setData((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, isRead: true } : item
-      )
-    );
-    toast.success("Marked as read successfully", {
-      position: "top-right",
-      autoClose: 3000,
-    });
+  const markAsRead = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return console.log("No token found, please login first.");
+
+      const response = await axios.patch(
+        `https://shyamg-api.desginersandme.com/public/api/admin/applications/${id}`,
+        { reviewed: true },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Update local state
+      setData((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, reviewed: true } : item
+        )
+      );
+
+      toast.success("Marked as reviewed successfully", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error("Error marking as reviewed:", error);
+      toast.error("Failed to mark as reviewed", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   useEffect(() => {
-    loginAdmin();
+    getApplications();
   }, []);
 
   return (
@@ -165,7 +170,7 @@ export default function JobApplications() {
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
                     <span
                       className={`h-3 w-3 inline-block rounded-full ${
-                        row.isRead ? "bg-green-600" : "bg-red-500"
+                        row.reviewed ? "bg-green-600" : "bg-red-500"
                       }`}
                     ></span>
                   </td>
@@ -206,13 +211,15 @@ export default function JobApplications() {
                   {/* Action: Unread -> Read + Delete */}
                   <td className="p-2 border border-gray-300">
                     <div className="flex justify-center gap-2">
-                      {!row.isRead && (
+                      {row.reviewed ? (
+                        <MdMarkEmailRead className="cursor-pointer" />
+                      ) : (
                         <MdMarkEmailUnread
                           className="cursor-pointer"
                           onClick={() => markAsRead(row.id)}
                         />
                       )}
-                      {row.isRead && <MdMarkEmailRead className="cursor-pointer" />}
+
                       <MdDelete
                         className="text-gray-700 cursor-pointer"
                         onClick={() => deleteApplication(row.id)}
