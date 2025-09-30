@@ -15,8 +15,8 @@ export default function JobApplications() {
 
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
-  const currentItems = data.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const currentItems = data?.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(data?.length / rowsPerPage);
 
   const maxPageButtons = 4;
   let startPage = Math.max(currentPage - Math.floor(maxPageButtons / 2), 1);
