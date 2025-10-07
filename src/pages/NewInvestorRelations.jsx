@@ -116,7 +116,7 @@ const NewInvestorRelations = () => {
     return (
         <div className="min-h-screen sm:pt-16">
             <div className="flex justify-start px-4">
-                <h3 className="text-2xl font-semibold">Welcome Back , Admin !</h3>
+                <h3 className="font-medium text-[24px] leading-[30px] tracking-normal capitalize text-black ">Welcome Back , Admin !</h3>
             </div>
             {/* Content */}
             <div className=" mx-auto mt-3 px-4">

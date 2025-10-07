@@ -34,7 +34,7 @@
 
 .side-cut {
     position: absolute;
-    right: -48px;
+    right: -40px;
     top: 0;
     height: 100%;
 
@@ -129,4 +129,62 @@
     color: #555;
     font-size: 12px;
     text-decoration: none;
+}
+
+/* Mobile First Adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column; /* stack instead of side by side */
+    height: auto;
+  }
+
+  .login-left {
+    display: none; /* hide left yellow banner on small screens */
+  }
+
+  .login-right {
+    flex: none;
+    width: 100%;
+    padding: 20px;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 90%;
+    margin: 40px auto;
+    padding: 20px;
+  }
+
+  .login-card h2 {
+    font-size: 20px;
+  }
+
+  .login-card label,
+  .login-card input,
+  .login-button {
+    font-size: 14px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 15px;
+    margin: 20px auto;
+  }
+
+  .login-logo {
+    width: 100px;
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 20px;
+  }
 }

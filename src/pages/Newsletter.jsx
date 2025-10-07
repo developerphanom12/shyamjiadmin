@@ -70,7 +70,7 @@ const Newsletter = () => {
                 <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td>{subscriber.email}</td>
                 <td className="action-cell">
-                  <label className="toggle-switch">
+                  <label className="toggle-switch ">
                     <input
                       type="checkbox"
                       checked={subscriber.enabled}

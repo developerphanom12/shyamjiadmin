@@ -9,8 +9,13 @@ import useProducts from "../hooks/products/useProducts";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const { addProduct } = useProducts();
-  const [categories, setCategories] = useState(["Snacks", "Chips"]);
+  const { addProduct , fetchCategories , categories, setCategories } = useProducts();
+  // const [categories, setCategories] = useState(["Snacks", "Chips"]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const [initialValues, setInitialValues] = useState({
     id: null,
     name: "",
@@ -32,16 +37,24 @@ const AddProduct = () => {
     rightFooterImagePreview: "",
     previewImage: "",
     rating: 0,
-    label: "best",
+    label: "none",
     isAddingCategory: false,
     newCategory: "",
   });
+ 
 
   // Yup schema
   const validationSchema = Yup.object({
     name: Yup.string().required("Product name is required"),
-    slang: Yup.string().required("Slang is required"),
-    price: Yup.number().typeError("Price must be a number").required("Price is required"),
+    image: Yup.mixed().required("Image is required"),
+    // rating: Yup.number().required("Rating is required"),
+    rating: Yup.number()
+  .min(1, "Please give at least 1 star") // minimum 1 star required
+  .max(5, "Rating cannot be more than 5") // optional but good
+  .required("Rating is required"),
+
+    // slang: Yup.string().required("Slang is required"),
+    price: Yup.string().required("Price is required"),
     description: Yup.string().required("Description is required"),
     ingredient: Yup.string().required("Ingredient is required"),
     advantages: Yup.string().required("Advantages are required"),
@@ -80,7 +93,7 @@ const AddProduct = () => {
 
 
   return (
-    <div className="add-product-container">
+    <div className=" p-5 sm:p-[20px] sm:pt-16">
       {/* Header */}
       <div className="header">
         <h2>Product Management</h2>
@@ -113,6 +126,12 @@ const AddProduct = () => {
                 <span className="label-text">Product Label</span>
                 <div className="label-buttons">
                   <span
+                    className={`label-btn ${values.label === "none" ? "active" : ""}`}
+                    onClick={() => setFieldValue("label", "none")}
+                  >
+                    NONE
+                  </span>
+                  <span
                     className={`label-btn ${values.label === "best" ? "active" : ""}`}
                     onClick={() => setFieldValue("label", "best")}
                   >
@@ -123,6 +142,18 @@ const AddProduct = () => {
                     onClick={() => setFieldValue("label", "new")}
                   >
                     NEW
+                  </span>
+                  <span
+                    className={`label-btn ${values.label === "upcoming" ? "active" : ""}`}
+                    onClick={() => setFieldValue("label", "upcoming")}
+                  >
+                    UPCOMING
+                  </span>
+                  <span
+                    className={`label-btn ${values.label === "popular" ? "active" : ""}`}
+                    onClick={() => setFieldValue("label", "popular")}
+                  >
+                    POPULAR 
                   </span>
                 </div>
               </div>
@@ -150,6 +181,7 @@ const AddProduct = () => {
                       </span>
                     ))}
                   </div>
+                  <ErrorMessage name="rating" component="div" className="error" />
 
                   <label>Update Image</label>
                   <div className="product-upload-input">
@@ -166,6 +198,7 @@ const AddProduct = () => {
                       }}
                     />
                   </div>
+                  <ErrorMessage name="image" component="div" className="error" />
                 </div>
               </div>
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import './AddBlog.css';
 import upload from '../assets/upload.svg';
 import dummyBlogs from '../data/dummyBlogs';
-import { Editor } from '@tinymce/tinymce-react';
+import JoditEditor from "jodit-react";
 import useBlogs from '../hooks/blogs/useBlogs';
 
 const EditBlog = () => {
@@ -68,7 +68,7 @@ const EditBlog = () => {
   if (!initialValues) return <p>Loading...</p>;
 
   return (
-    <div className="add-blog-container">
+    <div className="p-5 sm:p-[20px] sm:pt-16">
       {/* Header */}
       <div className="header">
         <h2>Blog Management</h2>
@@ -131,24 +131,27 @@ const EditBlog = () => {
             {/* Description */}
             <div className="form-group">
               <label>Description</label>
-              <Editor
-                apiKey="lvrlrcqjgu0x83amssn032svvfj3cof1640bfseih7p0w7a5"
+              <JoditEditor
                 value={values.description}
-                init={{
+                config={{
+                  readonly: false,
                   height: 400,
-                  menubar: false,
-                  statusbar: false,
-                  plugins: [
-                    'advlist autolink lists link image charmap preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table paste code help wordcount'
+                  toolbarAdaptive: false,
+                  buttons: [
+                    "bold", "italic", "underline", "|",
+                    "fontsize", "|",
+                    "ul", "ol", "|",
+                    "align", "undo", "redo"
                   ],
-                  toolbar:
-                    'undo redo | formatselect | bold italic underline forecolor | ' +
-                    'alignleft aligncenter alignright alignjustify | ' +
-                    'bullist numlist outdent indent | removeformat | help'
+                  askBeforePasteHTML: false,
+                  askBeforePasteFromWord: false,
+                  processPasteHTML: true,
+                  processPasteFromWord: true,
+                  clipboard: {
+                    matchVisual: false,
+                  },
                 }}
-                onEditorChange={(content) => setFieldValue('description', content)}
+                onBlur={(newContent) => setFieldValue("description", newContent)}
               />
               <ErrorMessage name="description" component="div" className="error" />
             </div>

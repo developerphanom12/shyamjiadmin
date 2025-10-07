@@ -7,7 +7,7 @@ import useContact from '../hooks/contacts/useContact';
 
 const AddContact = () => {
     const navigate = useNavigate();
-    const { fetchContactDetails, contactDetails , UpdateContact } = useContact();
+    const { fetchContactDetails, contactDetails, UpdateContact } = useContact();
     useEffect(() => {
         fetchContactDetails();
     }, []);
@@ -20,7 +20,12 @@ const AddContact = () => {
         headOffice: Yup.string().required("Head office address is required"),
         branchOffice1: Yup.string().required("Branch office address is required"),
         email: Yup.string().email("Invalid email").required("Email is required"),
-        phone: Yup.string().required("Phone number is required"),
+        phone: Yup.string()
+            .matches(
+                /^(\+91[-\s]?)?[0]?(91)?[6-9]\d{9}$/,
+                "Enter a valid mobile number"
+            )
+            .required("Phone number is required"),
         secondaryPhone: Yup.string(),
     });
 
@@ -34,30 +39,30 @@ const AddContact = () => {
     };
 
     // Handle save (API integration here)
-const handleSave = async (values) => {
-  console.log("Submitted values:", values);
+    const handleSave = async (values) => {
+        console.log("Submitted values:", values);
 
-  const payload = {
-    head_office_address: values.headOffice,
-    branch_one_address: values.branchOffice1,
-    email: values.email,
-    phone: values.phone,
-    secondary_phone: values.secondaryPhone,
-  };
+        const payload = {
+            head_office_address: values.headOffice,
+            branch_one_address: values.branchOffice1,
+            email: values.email,
+            phone: values.phone,
+            secondary_phone: values.secondaryPhone,
+        };
 
-  try {
-    await UpdateContact(payload); // pass object directly
-    navigate('/contact');
-  } catch (error) {
-    console.error("Error saving contact:", error);
-  }
-};
+        try {
+            await UpdateContact(payload); // pass object directly
+            navigate('/contact');
+        } catch (error) {
+            console.error("Error saving contact:", error);
+        }
+    };
 
 
     return (
-        <div className="contact-page">
+        <div className="contact-page p-5 sm:p-[20px] sm:pt-16">
             {/* Header */}
-            <div className="contact-header">
+            <div className="contact-header ">
                 <h2 className="contact-title">Contact Us</h2>
                 <div className="handel-buttons">
                     <button onClick={handleCancel} className="cancel-button">Cancel</button>
@@ -72,7 +77,7 @@ const handleSave = async (values) => {
 
                 <Formik
                     initialValues={initialValues}
-                    //   validationSchema={validationSchema}
+                    validationSchema={validationSchema}
                     onSubmit={handleSave}
                 >
                     {() => (

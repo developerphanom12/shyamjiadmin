@@ -15,6 +15,7 @@ const useProducts = () => {
   const [loading, setLoading] = useState(false)
   const [allProducts, setAllProducts] = useRecoilState(getAllProducts)
   const [productDetails, setProductDetails] = useState(getProductDetailsAtom)
+  const [categories, setCategories] = useState([]);
   const fetchAllProducts = async () => {
     setLoading(true);
     try {
@@ -22,7 +23,7 @@ const useProducts = () => {
         method: "GET",
         url: `${conf.apiBaseUrl}products`,
       });
-      if (res) {
+      if (res?.success) {
         setAllProducts(res);
         console.log("res", res);
         setLoading(false);
@@ -41,7 +42,7 @@ const useProducts = () => {
         url: `${conf.apiBaseUrl}products`,
         data,
       });
-      if (res.success) {
+      if (res?.success) {
         toast.success("Product Added");
         console.log("response create", res);
         setLoading(false);
@@ -71,15 +72,16 @@ const useProducts = () => {
     }}
 
   const updateProduct = async (id, data)=>{
+    setLoading(true);
     try {
       const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}products/${id}`,
         data,
       });
-      if (res.success) {
-        fetchAllProducts()
+      if (res?.success) {
         toast.success("Product Updated");
+        fetchAllProducts();
         console.log("response update", res);
         setLoading(false);
         navigate("/products");
@@ -117,8 +119,26 @@ const useProducts = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await fetchData({
+        method: "GET",
+        url: `${conf.apiBaseUrl}user/product_category`,
+      });
+      if (res?.success) {
+        setCategories(res.categories);
+      }
+    } catch (error) {
+      console.error("Error fetching:", error);
+    }
+  };
+
+
   return {
     fetchAllProducts,
+    fetchCategories,
+    categories,
+    setCategories,
     loading,
     allProducts,
     addProduct,

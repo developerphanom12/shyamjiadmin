@@ -32,7 +32,7 @@ const useLogin = () => {
         setUserInfo({
           isAuthenticated: true,
         });
-        navigate("/dashboard");
+        navigate("/products");
       } else {
         toast.error(res?.message);
       }

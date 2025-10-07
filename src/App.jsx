@@ -25,6 +25,9 @@ import NewInvestorRelations from "./pages/NewInvestorRelations";
 import ContactQueries from "./pages/ContactQueries";
 import JobApplications from "./pages/JobApplications";
 import Distributors from "./pages/Distributors";
+import 'react-toastify/dist/ReactToastify.css';  
+import { ToastContainer } from 'react-toastify';
+
 
 // Layout for all authenticated pages
 function AdminLayout() {
@@ -52,7 +55,7 @@ function App() {
            
         {/* Routes with Sidebar + Navbar */}
         <Route element={<AdminLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/products" element={<ProductManagement />} />
           <Route path="/products/add" element={<AddProduct />} />
           <Route path="/products/edit/:id" element={<EditProduct />} />
@@ -71,6 +74,7 @@ function App() {
         </Route>
            </Route>
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }
