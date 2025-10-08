@@ -9,11 +9,11 @@ import useBlogs from '../hooks/blogs/useBlogs';
 const BlogManagement = () => {
   const navigate = useNavigate();
 
-  const [blogs, setBlogs] = useState(dummyBlogs);
+  // const [blogs, setBlogs] = useState(dummyBlogs);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(7);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const {fetchAllBlogs , allBlogs , deleteBlog} = useBlogs()
-  const totalPages = itemsPerPage ? Math.ceil(blogs.length / itemsPerPage) : 0;
+  const totalPages = itemsPerPage ? Math.ceil(allBlogs?.length / itemsPerPage) : 0;
 
   const handleAddBlog = () => {
     navigate('/blogs/add');
@@ -44,7 +44,7 @@ const BlogManagement = () => {
   };
 
   const currentBlogs = itemsPerPage
-    ? blogs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    ? allBlogs?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     : [];
 
   return (
@@ -77,13 +77,13 @@ const BlogManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {allBlogs?.map((blog) => (
+              {currentBlogs?.map((blog) => (
                 <tr key={blog.id}>
                   <td><img src={blog.image_url} alt={blog.blog_title} /></td>
                   <td>{blog.blog_title}</td>
                   <td className="blog-actions">
-                    <button onClick={() => handleEdit(blog.id)}><FiEdit /></button>
-                    <button onClick={() => handleDelete(blog.id)}><RiDeleteBin6Line /></button>
+                    <button onClick={() => handleEdit(blog.id)}><FiEdit title='Edit' className='text-lg hover:text-[#E24F14]' /></button>
+                    <button onClick={() => handleDelete(blog.id)}><RiDeleteBin6Line title='Delete' className='text-lg hover:text-red-600' /></button>
                   </td>
                 </tr>
               ))}
@@ -102,8 +102,8 @@ const BlogManagement = () => {
             </select>
           </div>
           
-          <div className="record-info">
-            Showing {currentBlogs.length > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0} to {((currentPage - 1) * itemsPerPage + currentBlogs.length)} out of {blogs.length} records
+          <div className="record-info hidden sm:block">
+            Showing {currentBlogs.length > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0} to {((currentPage - 1) * itemsPerPage + currentBlogs.length)} out of {allBlogs?.length} records
           </div>
 
           {/* Pagination */}

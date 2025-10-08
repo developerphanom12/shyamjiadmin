@@ -9,16 +9,18 @@ import useProducts from "../hooks/products/useProducts";
 const EditProduct = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { fetchProductById, productDetails, updateProduct } = useProducts();
+  const { fetchProductById, productDetails, updateProduct , fetchCategories, categories , setCategories } = useProducts();
 
-  const [categories, setCategories] = useState(["Snacks", "Chips"]);
+  // const [categories, setCategories] = useState(["Snacks", "Chips"]);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   // Yup schema
   const validationSchema = Yup.object({
     name: Yup.string().required("Product name is required"),
-    slang: Yup.string().required("Slang is required"),
-    price: Yup.number()
-      .typeError("Price must be a number")
+    // slang: Yup.string().required("Slang is required"),
+    price: Yup.string()
       .required("Price is required"),
     description: Yup.string().required("Description is required"),
     ingredient: Yup.string().required("Ingredient is required"),
@@ -48,7 +50,7 @@ const EditProduct = () => {
     image: productDetails?.product_image || null, // file will go here
     previewImage: productDetails?.image_url || "", // just for preview
     rating: productDetails?.product_rating || 0,
-    label: productDetails?.product_label || "best",
+    label: productDetails?.product_label || "none",
     isAddingCategory: false,
     newCategory: "",
   };
@@ -82,7 +84,7 @@ const EditProduct = () => {
   };
 
   return (
-    <div className="add-product-container">
+    <div className="p-5 sm:p-[20px] sm:pt-16">
       {/* Header */}
       <div className="header">
         <h2>Product Management</h2>
@@ -114,6 +116,14 @@ const EditProduct = () => {
                 <div className="label-buttons">
                   <span
                     className={`label-btn ${
+                      values.label === "none" ? "active" : ""
+                    }`}
+                    onClick={() => setFieldValue("label", "none")}
+                  >
+                    NONE
+                  </span>
+                   <span
+                    className={`label-btn ${
                       values.label === "best" ? "active" : ""
                     }`}
                     onClick={() => setFieldValue("label", "best")}
@@ -128,6 +138,23 @@ const EditProduct = () => {
                   >
                     NEW
                   </span>
+                  <span
+                    className={`label-btn ${
+                      values.label === "upcoming" ? "active" : ""
+                    }`}
+                    onClick={() => setFieldValue("label", "upcoming")}
+                  >
+                    UPCOMING
+                  </span>
+                  <span
+                    className={`label-btn ${
+                      values.label === "popular" ? "active" : ""
+                    }`}
+                    onClick={() => setFieldValue("label", "popular")}
+                  >
+                    POPULAR
+                  </span>
+                 
                 </div>
               </div>
 
@@ -315,7 +342,18 @@ const EditProduct = () => {
 
                 {/* Color Code */}
                 <div className="form-field full-width">
-                  <label>Color Code</label>
+                  <div className="flex">
+                    <label>Color Code</label>
+                    {/* Color Preview Box */}
+                    <div
+                      className=""
+                      style={{
+                        backgroundColor: values.colorCode || "#fff",
+                        height: "15px",
+                        width: "15px"
+                      }}
+                    ></div>
+                  </div>
                   <Field type="text" name="colorCode" placeholder="Write Color code #ffffff" />
                   <ErrorMessage
                     name="colorCode"

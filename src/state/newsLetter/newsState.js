@@ -4,6 +4,6 @@ const { persistAtom } = recoilPersist();
 
 export const getnewsLetterListAtom = atom({
     key:"newsLetterList" ,
-    default:{},
+    default:[],
     effects_UNSTABLE:[persistAtom]
 })

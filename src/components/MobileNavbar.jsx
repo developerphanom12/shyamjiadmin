@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { gsap } from "gsap";
 import "./MobileNavbar.css"; // Import the CSS file
+import { useNavigate } from "react-router-dom";
 
 const MobileNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef(null);
   const overlayRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
@@ -36,6 +38,11 @@ const MobileNavbar = () => {
     }
   }, [isOpen]);
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('token');
+    navigate('/');
+  };
+
   return (
     <div className="mobile-navbar">
       {/* Top Navbar */}
@@ -64,14 +71,17 @@ const MobileNavbar = () => {
 
         {/* Navigation Links */}
         <nav className="sidebarrr-nav">
-          <a href="/dashboard">Dashboard</a>
+          {/* <a href="/dashboard">Dashboard</a> */}
           <a href="/products">Product Management</a>
           <a href="/blogs">Blog Management</a>
           <a href="/contact">Contact Us</a>
           <a href="/investors">Investor Relations</a>
           <a href="/banner">Banner</a>
           <a href="/newsletter">Newsletter</a>
-          <button className="logout-btn">Logout</button>
+          <a href="/job-applications">Career Form</a>
+          <a href="/distributors">Distributor Form</a>
+          <a href="/contact-queries">Contact Us Form</a>
+          <button onClick={handleLogout} className="logout-btn">Logout</button>
         </nav>
       </div>
     </div>

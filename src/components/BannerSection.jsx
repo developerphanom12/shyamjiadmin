@@ -78,7 +78,7 @@ const BannerSection = ({ heading, endpoint }) => {
               <button
                 type="submit"
                 disabled={isSubmitting || loading}
-                className="w-[109px] h-[44px] border border-gray-400 rounded-lg text-sm font-medium hover:bg-gray-100"
+                className="w-[109px] h-[44px] border border-gray-400 rounded-lg text-sm font-medium bg-[#ffe100] hover:bg-[#e9ce03]"
               >
                 {(isSubmitting || loading) ? "Updating..." : "Update File"}
               </button>

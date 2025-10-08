@@ -25,13 +25,13 @@ export default function Distributos() {
   }));
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openDropdown, setOpenDropdown] = useState(false);
-  const {fetchAllDistributor , distributor , deleteDistributor , markAsRead} = useDistributor()
+  const { fetchAllDistributor, distributor, deleteDistributor, markAsRead } = useDistributor()
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchAllDistributor()
-  },[])
+  }, [])
 
 
   const indexOfLast = currentPage * rowsPerPage;
@@ -40,10 +40,10 @@ export default function Distributos() {
 
   const totalPages = Math.ceil(distributor?.length / rowsPerPage);
 
-//   const handleRowsChange = (e) => {
-//     setRowsPerPage(Number(e.target.value));
-//     setCurrentPage(1);
-//   };
+  //   const handleRowsChange = (e) => {
+  //     setRowsPerPage(Number(e.target.value));
+  //     setCurrentPage(1);
+  //   };
 
   // Pagination buttons logic (show max 4 buttons)
   const maxPageButtons = 4;
@@ -58,12 +58,12 @@ export default function Distributos() {
     pageNumbers.push(i);
   }
 
-   const rowOptions = [7, 10, 20];
+  const rowOptions = [5, 10, 20];
 
   return (
     //<div className="w-full min-h-screen bg-gray-50 flex items-center justify-center p-4 ">
-    <div className="w-full p-3 md:p-5 mt-[50px]">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+    <div className="w-full p-5 sm:p-[20px] sm:pt-16">
+      <h1 className="font-medium text-[24px] leading-[30px] tracking-normal capitalize text-black mb-4">
         Welcome Back, Admin!
       </h1>
 
@@ -86,7 +86,7 @@ export default function Distributos() {
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Name
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] whitespace-nowrap">
                   Name of the Firm
                 </th>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
@@ -101,7 +101,7 @@ export default function Distributos() {
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Already Business Brand
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] ">
                   Mobile Number
                 </th>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
@@ -110,7 +110,8 @@ export default function Distributos() {
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   GSTIN
                 </th>
-                <th className="px-4 py-2 text-left">Message</th>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] whitespace-nowrap"> Messages send by Distributors
+                </th>
                 <th className="px-4 py-2 text-left">Action</th>
               </tr>
             </thead>
@@ -118,7 +119,7 @@ export default function Distributos() {
               {currentItems.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-t-2 border-[#F6F6F7] text-[#000000] font-semibold"
+                  className="border-t-2 border-[#F6F6F7] text-[#000000] "
                 >
                   <td className="flex justify-center items-center mt-3  ">
                     {row.reviewed === 1 ? (
@@ -158,18 +159,22 @@ export default function Distributos() {
                     {row.gstin}
                   </td>
                   <td className="px-4 py-2">{row.message}</td>
-                  <td className="p-2 border border-gray-300">
-                                      <div className="px-6  flex justify-center">
-                                        <button onClick={()=> markAsRead(row.id)} className="hover:text-blue-600 text-xl cursor-pointer">
-                                          {row.reviewed === 1 ?  <MdMarkEmailRead/>:<MdMarkEmailUnread/>}
-                                        </button>
-                                        <button className="hover:text-red-600 text-xl cursor-pointer" 
-                                        onClick={() => deleteDistributor(row.id)}>
-                                          <MdDelete />
-                                        </button>
-                                      </div>
-                                    </td>
-                  
+                  <td className="p-2 border border-[#F6F6F7]">
+                    <div className="px-6  flex justify-center">
+                      <button onClick={() => markAsRead(row.id)} 
+                      className="hover:text-[#E24F14] text-xl cursor-pointer"
+                      title={row.reviewed === 1 ?  null : "Mark as read"} // <- tooltip
+                      >
+                        {row.reviewed === 1 ? <MdMarkEmailRead /> : <MdMarkEmailUnread />}
+                      </button>
+                      <button className="hover:text-red-600 text-xl cursor-pointer"
+                        onClick={() => deleteDistributor(row.id)}
+                        title="Delete">
+                        <MdDelete />
+                      </button>
+                    </div>
+                  </td>
+
                 </tr>
               ))}
             </tbody>
@@ -199,9 +204,8 @@ export default function Distributos() {
                       setCurrentPage(1);
                       setOpenDropdown(false);
                     }}
-                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                      rowsPerPage === opt ? "bg-gray-200 font-semibold" : ""
-                    }`}
+                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${rowsPerPage === opt ? "bg-gray-200 font-semibold" : ""
+                      }`}
                   >
                     {opt}
                   </div>
@@ -211,12 +215,12 @@ export default function Distributos() {
           </div>
 
           {/* Center - Info */}
-          <div className="text-[#A2A1A8]">
+          <div className="text-[#A2A1A8] hidden sm:block">
             Showing <span className="font-semibold">{indexOfFirst + 1}</span> to{" "}
             <span className="font-semibold">
-              {Math.min(indexOfLast, data.length)}
+              {Math.min(indexOfLast, distributor?.length)}
             </span>{" "}
-            out of <span className="font-semibold">{data.length}</span> records
+            out of <span className="font-semibold">{distributor?.length}</span> records
           </div>
 
           {/* Right - Pagination Controls */}
@@ -233,11 +237,10 @@ export default function Distributos() {
               <button
                 key={num}
                 onClick={() => setCurrentPage(num)}
-                className={`px-3 py-1 rounded  ${
-                  currentPage === num
+                className={`px-3 py-1 rounded  ${currentPage === num
                     ? "border border-[#000000] text-black font-semibold"
                     : " text-black font-semibold"
-                }`}
+                  }`}
               >
                 {num}
               </button>

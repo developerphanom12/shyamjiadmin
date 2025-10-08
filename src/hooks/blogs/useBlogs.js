@@ -71,14 +71,15 @@ const useBlogs = () => {
     }}
 
   const updateBlog = async (id, data)=>{
+    setLoading(true);
     try {
       const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}blogs/${id}?_method=PUT`,
         data,
       });
-      if (res.success) {
-        fetchAllBlogs()
+      if (res?.success) {
+        fetchAllBlogs();
         toast.success("Blog Updated");
         console.log("response update", res);
         setLoading(false);

@@ -46,9 +46,9 @@ const AddBlog = () => {
     }
 
     values.faqs.forEach((faq, index) => {
-    formData.append(`faqs[${index}][question]`, faq.question);
-    formData.append(`faqs[${index}][answer]`, faq.answer);
-  });
+      formData.append(`faqs[${index}][question]`, faq.question);
+      formData.append(`faqs[${index}][answer]`, faq.answer);
+    });
     try {
       await addBlog(formData); // pass FormData to your API call
       // navigate("/blogs");
@@ -58,20 +58,20 @@ const AddBlog = () => {
   };
 
   return (
-    <div className="add-blog-container">
+    <div className="p-5 sm:p-[20px] sm:pt-16">
       {/* Header */}
       <div className="header">
         <h2>Blog Management</h2>
         <div className="header-actions">
           <button className="cancel-btn" onClick={handleCancel}>Cancel</button>
-          <button type="submit" form="blogForm" className="save-btn">Save</button>
+          <button type="submit" form="blogForm" className="save-btn">Add </button>
         </div>
       </div>
 
       {/* Form */}
       <Formik
         initialValues={initialValues}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ values, setFieldValue }) => (
@@ -119,25 +119,32 @@ const AddBlog = () => {
 
             {/* Description */}
             {/* Description */}
-<div className="form-group">
-  <label>Description</label>
-  <JoditEditor
-    value={values.description}
-    config={{
-      readonly: false,
-      height: 400,
-      toolbarAdaptive: false,
-      buttons: [
-        "bold", "italic", "underline", "|",
-        "fontsize", "|",
-        "ul", "ol", "|",
-        "align", "undo", "redo"
-      ]
-    }}
-    onBlur={(newContent) => setFieldValue("description", newContent)}
-  />
-  <ErrorMessage name="description" component="div" className="error" />
-</div>
+            <div className="form-group">
+              <label>Description</label>
+              <JoditEditor
+                value={values.description}
+                config={{
+                  readonly: false,
+                  height: 400,
+                  toolbarAdaptive: false,
+                  buttons: [
+                    "bold", "italic", "underline", "|",
+                    "fontsize", "|",
+                    "ul", "ol", "|",
+                    "align", "undo", "redo"
+                  ],
+                  askBeforePasteHTML: false,
+                  askBeforePasteFromWord: false,
+                  processPasteHTML: true,
+                  processPasteFromWord: true,
+                  clipboard: {
+                    matchVisual: false,
+                  },
+                }}
+                onBlur={(newContent) => setFieldValue("description", newContent)}
+              />
+              <ErrorMessage name="description" component="div" className="error" />
+            </div>
 
 
             {/* FAQ Section */}

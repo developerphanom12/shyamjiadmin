@@ -5,18 +5,19 @@ import { MdDelete, MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
 import Swal from "sweetalert2";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import conf from "../config";
 
 export default function JobApplications() {
   const [data, setData] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openDropdown, setOpenDropdown] = useState(false);
 
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
-  const currentItems = data.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const currentItems = data?.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(data?.length / rowsPerPage);
 
   const maxPageButtons = 4;
   let startPage = Math.max(currentPage - Math.floor(maxPageButtons / 2), 1);
@@ -28,17 +29,17 @@ export default function JobApplications() {
   const pageNumbers = [];
   for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
 
-  const rowOptions = [7, 10, 20];
+  const rowOptions = [5, 10, 20];
 
   // Login + fetch applications
 
   const getApplications = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (!token) return console.log("No token found, please login first.");
 
       const res = await axios.get(
-        "https://shyamg-api.desginersandme.com/public/api/admin/applications?per_page=20",
+        `${conf.apiBaseUrl}admin/applications?per_page=20`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setData(res.data.data);
@@ -48,7 +49,7 @@ export default function JobApplications() {
   };
 
   const deleteApplication = async (id) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -62,7 +63,7 @@ export default function JobApplications() {
     if (result.isConfirmed) {
       try {
         await axios.delete(
-          `https://shyamg-api.desginersandme.com/public/api/admin/applications/${id}`,
+          `${conf.apiBaseUrl}admin/applications/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setData((prev) => prev.filter((item) => item.id !== id));
@@ -77,11 +78,11 @@ export default function JobApplications() {
   // Mark as read
   const markAsRead = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (!token) return console.log("No token found, please login first.");
 
       const response = await axios.patch(
-        `https://shyamg-api.desginersandme.com/public/api/admin/applications/${id}`,
+        `${conf.apiBaseUrl}admin/applications/${id}`,
         { reviewed: true },
         {
           headers: {
@@ -116,9 +117,9 @@ export default function JobApplications() {
   }, []);
 
   return (
-    <div className="w-full p-3 md:p-5 mt-[50px] ">
+    <div className="w-full p-5 sm:p-[20px] sm:pt-16 ">
       <ToastContainer />
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+      <h1 className="font-medium text-[24px] leading-[30px] tracking-normal capitalize text-black mb-4">
         Welcome Back, Admin!
       </h1>
 
@@ -155,8 +156,8 @@ export default function JobApplications() {
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Town
                 </th>
-                <th className="px-4 py-2 text-left">Expected Salary</th>
-                <th className="px-4 py-2 text-left">Action</th>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">Expected Salary</th>
+                <th className="px-4 py-2 text-left ">Action</th>
               </tr>
             </thead>
 
@@ -164,7 +165,7 @@ export default function JobApplications() {
               {currentItems.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-t-2 border-[#F6F6F7] text-[#000000] font-semibold"
+                  className="border-t-2 border-[#F6F6F7] text-[#000000] "
                 >
                   {/* Status */}
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
@@ -187,9 +188,9 @@ export default function JobApplications() {
                     {row.mobile_number}
                   </td>
                   <td className="px-4 py-2 border-r border-[#F6F6F7]">
-                    {row.resume_path ? (
+                    {row.resume_url ? (
                       <a
-                        href={row.resume_path}
+                        href={row.resume_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-[#FFAD00] text-white p-2 rounded-md inline-block"
@@ -209,19 +210,21 @@ export default function JobApplications() {
                   <td className="px-4 py-2">{row.expected_salary}</td>
 
                   {/* Action: Unread -> Read + Delete */}
-                  <td className="p-2 border border-gray-300">
+                  <td className="p-2 border-l border-gray-100">
                     <div className="flex justify-center gap-2">
                       {row.reviewed ? (
-                        <MdMarkEmailRead className="cursor-pointer" />
+                        <MdMarkEmailRead className="cursor-pointer text-xl hover:text-[#E24F14]"/>
                       ) : (
                         <MdMarkEmailUnread
-                          className="cursor-pointer"
+                          
+                          title="Mark As Read" className="cursor-pointer text-xl hover:text-[#E24F14]"
                           onClick={() => markAsRead(row.id)}
                         />
                       )}
 
                       <MdDelete
-                        className="text-gray-700 cursor-pointer"
+                        title="Delete"
+                        className=" cursor-pointer text-xl hover:text-red-600"
                         onClick={() => deleteApplication(row.id)}
                       />
                     </div>
@@ -263,7 +266,7 @@ export default function JobApplications() {
             )}
           </div>
 
-          <div className="text-[#A2A1A8]">
+          <div className="text-[#A2A1A8] hidden sm:block">
             Showing <span className="font-semibold">{indexOfFirst + 1}</span> to{" "}
             <span className="font-semibold">
               {Math.min(indexOfFirst + rowsPerPage, data.length)}

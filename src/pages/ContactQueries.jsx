@@ -18,7 +18,7 @@ export default function ContactQueries() {
   }));
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openDropdown, setOpenDropdown] = useState(false);
   const { messages, loading, fetchAllMessages, deleteMessage , markAsRead } = useMessages();
 
@@ -45,14 +45,14 @@ export default function ContactQueries() {
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
-  const rowOptions = [7, 10, 20];
+  const rowOptions = [5, 10, 20];
 
   console.log("messages", messages);
 
   return (
     // <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center p-4">
-    <div className="w-full p-3 md:p-5 mt-[50px]">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+    <div className="w-full p-5 sm:p-[20px] sm:pt-16">
+      <h1 className="font-medium text-[24px] leading-[30px] tracking-normal capitalize text-black mb-4">
         Welcome Back, Admin!
       </h1>
 
@@ -65,7 +65,7 @@ export default function ContactQueries() {
         {/* Table */}
         <div className="overflow-x-auto ">
           <table className="w-full border border-[#F6F6F7] rounded-lg text-sm border-collapse">
-            <thead className="bg-[#FFFFFF] text-[#A2A1A8]">
+            <thead className="bg-[#FFFFFF] text-[#A2A1A8] ">
               <tr>
                 <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
                   Status
@@ -100,7 +100,7 @@ export default function ContactQueries() {
               {currentItems.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-t-2 border-[#F6F6F7] text-[#000000] font-semibold"
+                  className="border-t-2 border-[#F6F6F7] text-[#000000]"
                 >
 
                   <td className="flex justify-center items-center mt-3  ">
@@ -138,14 +138,20 @@ export default function ContactQueries() {
                   <td className="px-4 py-2">{row.message}</td>
                   <td className="p-2 border-l border-gray-100">
                     <div className="px-6  flex justify-center">
-                      <button onClick={()=> markAsRead(row.id)} className="hover:text-blue-600 text-xl cursor-pointer">
+                      <button 
+                      onClick={()=> markAsRead(row.id)} 
+                      className="hover:text-[#E24F14] text-xl cursor-pointer"
+                       title={row.reviewed === 1 ?  null : "Mark as read"} >
+                       {/* title= "Mark as read"> */}
                         {
                           row.reviewed === 1 ?  <MdMarkEmailRead />:<MdMarkEmailUnread />
                         }
                         {/* <FaEdit /> */}
                       </button>
                       <button className="hover:text-red-600 text-xl cursor-pointer"
-                        onClick={() => deleteMessage(row.id)}>
+                        onClick={() => deleteMessage(row.id)}
+                        title="Delete">
+
                         <MdDelete />
                       </button>
                     </div>
@@ -190,12 +196,12 @@ export default function ContactQueries() {
           </div>
 
           {/* Center - Info */}
-          <div className="text-[#A2A1A8]">
+          <div className="text-[#A2A1A8] hidden sm:block">
             Showing <span className="font-semibold">{indexOfFirst + 1}</span> to{" "}
             <span className="font-semibold">
-              {Math.min(indexOfLast, data.length)}
+              {Math.min(indexOfLast, messages?.length)}
             </span>{" "}
-            out of <span className="font-semibold">{data.length}</span> records
+            out of <span className="font-semibold">{messages?.length}</span> records
           </div>
 
           {/* Right - Pagination Controls */}

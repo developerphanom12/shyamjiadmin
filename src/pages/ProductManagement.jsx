@@ -9,12 +9,11 @@ import useProducts from '../hooks/products/useProducts';
 
 const ProductManagement = () => {
   const navigate = useNavigate();
-  const {fetchAllProducts , allProducts , deleteUser } = useProducts()
-  const [products, setProducts] = useState(allProducts?.products || []);
+  const {fetchAllProducts , allProducts , deleteUser  } = useProducts()
+  // const [products, setProducts] = useState(allProducts?.products || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const totalPages = itemsPerPage ? Math.ceil((products?.length || 0) / itemsPerPage) : 0;
+  const totalPages = itemsPerPage ? Math.ceil((allProducts?.products?.length || 0) / itemsPerPage) : 0;
 
   useEffect(()=>{
     fetchAllProducts()
@@ -45,14 +44,14 @@ const ProductManagement = () => {
   };
 
   const currentProducts = itemsPerPage
-    ? products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    ? allProducts?.products?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     : [];
 
   return (
     <div className="product-management-container p-5 sm:p-[20px] sm:pt-16">
       {/* Top Header */}
       <div className="top-header">
-        <h2>Welcome Back, Admin!</h2>
+        <h2 className=''>Welcome Back, Admin!</h2>
         <button onClick={handleAddProduct} className="add-product-button">
           Add Product
         </button>
@@ -69,7 +68,7 @@ const ProductManagement = () => {
 
         {/* Table */}
         <div className="table-container">
-          <table className="product-table">
+          <table className="product-table overflow-x-auto w-[100%]">
             <thead>
               <tr>
                 <th>Product Image</th>
@@ -84,9 +83,9 @@ const ProductManagement = () => {
                   <td><img src={product.image_url} alt={product.product_name} /></td>
                   <td>{product.product_name}</td>
                   <td>{product.product_price}</td>
-                  <td className="product-actions">
-                    <button onClick={() => handleEdit(product.id)}><FiEdit /></button>
-                    <button onClick={() => handleDelete(product.id)}><RiDeleteBin6Line /></button>
+                  <td className="space-x-2">
+                    <button className='hover:text-[#E24F14]' onClick={() => handleEdit(product.id)}><FiEdit title='Edit' className='text-lg' /></button>
+                    <button className='hover:text-red-600' onClick={() => handleDelete(product.id)}><RiDeleteBin6Line title='Delete' className='text-lg' /></button>
                   </td>
                 </tr>
               ))}
@@ -105,8 +104,8 @@ const ProductManagement = () => {
             </select>
           </div>
 
-          <div className="record-info">
-            Showing {currentProducts?.length > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0} to {((currentPage - 1) * itemsPerPage + currentProducts?.length)} out of {products.length} records
+          <div className="record-info hidden sm:block">
+            Showing {currentProducts?.length > 0 ? ((currentPage - 1) * itemsPerPage + 1) : 0} to {((currentPage - 1) * itemsPerPage + currentProducts?.length)} out of {allProducts?.products?.length} records
           </div>
 
           {/* Pagination */}

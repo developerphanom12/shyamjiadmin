@@ -39,7 +39,7 @@ const handleSubmit = async (values) => {
 
 
   return (
-    <div className="login-container fullScreen">
+    <div className="login-container fullScreen ">
       {/* ---------------- Left Section ---------------- */}
       <div className="login-left">
         <div className="yellow-section">

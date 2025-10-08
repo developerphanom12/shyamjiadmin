@@ -29,12 +29,20 @@ const Newsletter = () => {
     }
   };
 
+  // const currentSubscribers = itemsPerPage
+  //   ? newsLetterList?.slice(
+  //       (currentPage - 1) * itemsPerPage,
+  //       currentPage * itemsPerPage
+  //     )
+  //   : [];
+
   const currentSubscribers = itemsPerPage
-    ? newsLetterList?.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
-    : [];
+  ? (Array.isArray(newsLetterList) ? newsLetterList : []).slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
+  : [];
+
 
 //   console.log("newsLetterList", newsLetterList);
 
@@ -62,7 +70,7 @@ const Newsletter = () => {
                 <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td>{subscriber.email}</td>
                 <td className="action-cell">
-                  <label className="toggle-switch">
+                  <label className="toggle-switch ">
                     <input
                       type="checkbox"
                       checked={subscriber.enabled}

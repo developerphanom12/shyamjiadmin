@@ -2,13 +2,14 @@ import { NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import './Sidebar.css';
 
-import { MdDashboard } from 'react-icons/md';
+import { MdDashboard, MdMessage } from 'react-icons/md';
 import { FiBox, FiPhone} from 'react-icons/fi';
-import { FaPenNib, FaUsers } from 'react-icons/fa';
+import { FaPenNib, FaUsers, FaRegAddressCard } from 'react-icons/fa';
 // import { BiSupport } from 'react-icons/bi';
 import { RiImageEditLine } from 'react-icons/ri';
 import { IoNewspaperOutline } from 'react-icons/io5';
 import { BiSupport } from 'react-icons/bi';
+import { LuHandshake } from 'react-icons/lu';
 
 function Sidebar() {
   return (
@@ -18,12 +19,12 @@ function Sidebar() {
       <div className="overview">Overviews</div>
 
       <nav className="nav-menu">
-        <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
+        {/* <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
           <span className="menu-item">
             <MdDashboard className="icon" />
             Dashboard
           </span>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink to="/products" className={({ isActive }) => isActive ? "active" : ""}>
           <span className="menu-item">
@@ -66,27 +67,31 @@ function Sidebar() {
             Newsletter
           </span>
         </NavLink>
-
-        <NavLink to="/contact-queries" className={({ isActive }) => isActive ? "active" : ""}>
-          <span className="menu-item">
-            <BiSupport className="icon" />
-             Contact Queries
-          </span>
-        </NavLink>
-
         <NavLink to="/job-applications" className={({ isActive }) => isActive ? "active" : ""}>
           <span className="menu-item">
-            <BiSupport className="icon" />
-            Job Applications
+            <FaRegAddressCard className="icon" />
+            Career Form
           </span>
         </NavLink>
 
         <NavLink to="/distributors" className={({ isActive }) => isActive ? "active" : ""}>
           <span className="menu-item">
-            <BiSupport className="icon" />
-             Distributors
+            <LuHandshake className="icon" />
+            {/* <BiSupport className="icon" /> */}
+             Distributor Form
           </span>
         </NavLink>
+
+        <NavLink to="/contact-queries" className={({ isActive }) => isActive ? "active" : ""}>
+          <span className="menu-item">
+            <MdMessage className="icon" />
+            {/* <BiSupport className="icon" /> */}
+             Contact Us Form
+          </span>
+        </NavLink>
+
+        
+
       </nav>
     </div>
   );
