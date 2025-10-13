@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { confirmAlert } from "../../../utils/alertToast";
 import { getQuarterResult } from "../../../state/investor/inverstorState";
 
-const useFinancials = () => {
+const useQuarterResult = () => {
   const [fetchData] = useFetch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false)
@@ -161,4 +161,4 @@ const useFinancials = () => {
   }
 }
 
-export default useFinancials
+export default useQuarterResult
