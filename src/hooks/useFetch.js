@@ -14,7 +14,10 @@ function useFetch() {
         ...(params && { params }),
         headers: {
           Authorization: `Bearer ${token}`,
-          ...(data instanceof FormData && { 'Content-Type': 'multipart/form-data' }),
+          ...(data instanceof FormData
+    ? { 'Content-Type': 'multipart/form-data' }
+    : { 'Content-Type': 'application/json' }),
+
         },
       };
 

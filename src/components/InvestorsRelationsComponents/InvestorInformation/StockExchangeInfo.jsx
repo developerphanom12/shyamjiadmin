@@ -4,13 +4,27 @@ import { MdDelete } from "react-icons/md";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FiX } from "react-icons/fi";
+import useStockExchange from "../../../hooks/invester/investerInfo/useStockExchange";
 
 const StockExchangeInfo = () => {
   const [showAddModel, setShowModel] = useState(false);
+  const [showEditModel, setShowEditModel] = useState(false)
+  const { fetchStockExchange, stockExchange, addStockExchange, fetchStockExchangeById, stockExchangeDetails , setStockExchangeDetails , updateStockExchange, deleteStockExchange, } = useStockExchange()
+
+  useEffect(() => {
+    fetchStockExchange()
+  }, [])
+
   const initialValues = {
     stock: "",
     address: "",
     stockcode: "",
+  };
+
+  const initialValuesUpdate = {
+    stock: stockExchangeDetails.name || "",
+    address: stockExchangeDetails.address || "",
+    stockcode: stockExchangeDetails.stock_code || "",
   };
   const validationSchema = Yup.object({
     stock: Yup.string().required("Stock is required"),
@@ -18,27 +32,31 @@ const StockExchangeInfo = () => {
     stockcode: Yup.string().required("Stock code is required"),
   });
   const handleSubmit = (values) => {
-    console.log("Form Data:", values);
+    const formData = new FormData();
+    formData.append("name", values.stock);
+    formData.append("address", values.address);
+    formData.append("stock_code", values.stockcode);
+    addStockExchange(formData)
     setShowModel(false);
   };
 
+  const handleSubmitUpdate = (values) => {
+  const jsonData = {
+    name: values.stock,
+    address: values.address,
+    stock_code: values.stockcode,
+  };
 
-  const info = [
+  updateStockExchange(stockExchangeDetails.id, jsonData);
 
-    {
-      nameofexchange: "Audited Financial Statements",
-      address: "Red Rotopack Pvt. Ltd - Audited Accounts 31st March, 2022",
-      stockcode: "94759"
-    },
-    {
-      nameofexchange: "Audited Financial Statements",
-      address: "Red Rotopack Pvt. Ltd - Audited Accounts 31st March, 2022",
-      stockcode: "3499"
-    },
+  setShowEditModel(false);
+};
 
-  ];
 
-  return (
+
+
+
+  return ( 
 
     <>
       <div className="flex justify-end my-3">
@@ -81,10 +99,10 @@ const StockExchangeInfo = () => {
 
                 {/* Table Body */}
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {info.map((report, rIndex) => (
+                  {stockExchange?.map((report, rIndex) => (
                     <tr key={rIndex} className={rIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-4 py-4   text-gray-800">
-                        {report.nameofexchange}
+                        {report.name}
                       </td>
                       <td className="px-4 py-4  text-gray-800 border-x border-gray-300">
                         <div className=" " title={report.address}>
@@ -93,16 +111,20 @@ const StockExchangeInfo = () => {
                       </td>
                       <td className="px-4 py-4   text-gray-800 text-center">
                         <span className="inline-block px-2 py-1 rounded ">
-                          {report.stockcode}
+                          {report.stock_code}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm border-l border-gray-300">
                         <div className="flex gap-3 text-lg text-gray-700">
                           <button className="hover:text-blue-600">
-                            <FaEdit />
+                            <FaEdit onClick={() => {
+                              setStockExchangeDetails({})
+                              fetchStockExchangeById(report.id)
+                              setShowEditModel(true)
+                            }} />
                           </button>
                           <button className="hover:text-red-600">
-                            <MdDelete />
+                            <MdDelete onClick={() => deleteStockExchange(report.id)} />
                           </button>
                         </div>
                       </td>
@@ -193,6 +215,92 @@ const StockExchangeInfo = () => {
                       className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium"
                     >
                       Submit
+                    </button>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
+        )
+      }
+      {
+        showEditModel && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+            <div className="bg-white w-[90%] max-h-[80vh] max-w-6xl rounded-xl shadow-lg p-6 overflow-y-auto relative">
+              {/* Header */}
+              <div className="flex justify-between items-center mb-6 pb-3">
+                <h2 className="text-2xl font-bold text-gray-800">Edit Report</h2>
+                <button
+                  onClick={() => setShowEditModel(false)}
+                  className="p-2 rounded-full hover:bg-gray-100 transition"
+                >
+                  <FiX size={22} className="text-gray-600" />
+                </button>
+              </div>
+
+              {/* Form */}
+              <Formik
+                initialValues={initialValuesUpdate}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmitUpdate}
+                enableReinitialize
+              >
+                {({ values, setFieldValue }) => (
+                  <Form style={{ flexDirection: "column" }} className="flex  gap-5">
+
+
+                    {/* Title */}
+                    <div>
+                      <label className="block mb-1 font-medium text-gray-700">Stock</label>
+                      <Field
+                        type="text"
+                        name="stock"
+                        placeholder="Enter stock name"
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                      />
+                      <ErrorMessage
+                        name="stock"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    {/* Address */}
+                    <div>
+                      <label className="block mb-1 font-medium text-gray-700">Address</label>
+                      <Field
+                        as="textarea"
+                        name="address"
+                        placeholder="Enter address"
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400 resize-none"
+                      />
+                      <ErrorMessage
+                        name="address"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    {/* url */}
+                    <div>
+                      <label className="block mb-1 font-medium text-gray-700">Stock Codes</label>
+                      <Field
+                        type="text"
+                        name="stockcode"
+                        placeholder="Enter stockcode"
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                      />
+                      <ErrorMessage
+                        name="stockcode"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+
+                    {/* Submit */}
+                    <button
+                      type="submit"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium"
+                    >
+                      Update
                     </button>
                   </Form>
                 )}
