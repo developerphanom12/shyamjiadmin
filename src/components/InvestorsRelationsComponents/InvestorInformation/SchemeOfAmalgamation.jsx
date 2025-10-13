@@ -85,7 +85,7 @@ const SchemeOfAmalgamation = () => {
 
   // ------------------- CREATE -------------------
   // const handleSubmit = async (values, { resetForm }) => {
-  //   const token = localStorage.getItem("token");
+  //   const token = sessionStorage.getItem("token");
 
   //   try {
   //     const hasReports =
@@ -176,7 +176,7 @@ const SchemeOfAmalgamation = () => {
   // };
 
   const handleSubmit = async (values, { resetForm }) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       // Check if we are editing an entry
@@ -319,7 +319,7 @@ const SchemeOfAmalgamation = () => {
   // ------------------- DELETE SECTION -------------------
   const handleDeleteSection = async (section) => {
     const sectionId = section.id || section.section?.id; // normalize section ID
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -374,7 +374,7 @@ const SchemeOfAmalgamation = () => {
 
     if (!result.isConfirmed) return;
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       await axios.delete(

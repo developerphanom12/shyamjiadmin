@@ -39,7 +39,7 @@ const CorporatePresentation = () => {
 
   const fetchPresentations = async (page = 1) => {
     try {
-      const token = localStorage.getItem("token"); // ya hardcode kar sakte ho
+      const token = sessionStorage.getItem("token"); // ya hardcode kar sakte ho
       const response = await axios.get(
         `https://shyamg-api.desginersandme.com/public/api/admin/corporate-presentations`,
         {
@@ -88,7 +88,7 @@ const CorporatePresentation = () => {
       formData.append("file", values.file); // file tabhi append karo agar user change kare
     }
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       if (editingId) {
@@ -137,7 +137,7 @@ const CorporatePresentation = () => {
 
   //Delete handle
   const handleDelete = async (id) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     // Confirmation alert
     const result = await Swal.fire({

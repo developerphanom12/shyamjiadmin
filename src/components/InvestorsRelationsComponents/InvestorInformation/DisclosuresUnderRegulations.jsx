@@ -69,7 +69,7 @@ const DisclosuresUnderRegulations = () => {
   });
 
   const getDisclosure = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     try {
       const response = await axios.get(
         "https://shyamg-api.desginersandme.com/public/api/user/lodr-disclosures"
@@ -88,7 +88,7 @@ const DisclosuresUnderRegulations = () => {
   }, []);
 
   const handleSubmit = async (values, { resetForm }) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       if (editingId) {
@@ -134,7 +134,7 @@ const DisclosuresUnderRegulations = () => {
   };
 
   const handleDelete = async (id) => {
-    const yourToken = localStorage.getItem("token"); // 👈 replace with actual token or variable
+    const yourToken = sessionStorage.getItem("token"); // 👈 replace with actual token or variable
     Swal.fire({
       title: "Are you sure?",
       text: "You won’t be able to revert this!",

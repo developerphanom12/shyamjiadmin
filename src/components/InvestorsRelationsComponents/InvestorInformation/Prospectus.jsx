@@ -59,7 +59,7 @@ const Prospectus = () => {
 
   const fetchProspectuses = async (page = 1) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       const response = await axios.get(
         `https://shyamg-api.desginersandme.com/public/api/admin/prospectuses?per_page=10&page=${page}`,
         {
@@ -99,7 +99,7 @@ const Prospectus = () => {
         formDataUpdate.append("file", values.file);
       }
 
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       if (editingId) {
         // PATCH request for update
@@ -151,7 +151,7 @@ const Prospectus = () => {
   // Delete function
 
   const handleDelete = async (id) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     // Confirmation alert
     const result = await Swal.fire({
