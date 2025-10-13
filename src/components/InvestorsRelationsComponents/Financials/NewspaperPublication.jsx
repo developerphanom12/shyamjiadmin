@@ -1,323 +1,422 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaDownload, FaPlus, FaMinus, FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FiX } from "react-icons/fi";
-
-
-const categories = [
-  {
-    title: "English Publications - Financial Results",
-    reports: [
-      { title: "Free press India 30.06.25", file: "#" },
-      { title: "Free press India 31.12.24", file: "#" },
-      { title: "Free press India 30.09.24", file: "#" },
-      { title: "Free press India 30.06.24", file: "#" },
-      { title: "Free press India 31.12.23", file: "#" },
-      { title: "Free press India 30.09.23", file: "#" },
-      { title: "Free press India 30.06.23", file: "#" },
-    ]
-
-  },
-  {
-    title: "Hindi Publications - Financial Results",
-    reports: [
-      { title: "Free press India 30.06.25", file: "#" },
-      { title: "Free press India 31.12.24", file: "#" },
-      { title: "Free press India 30.09.24", file: "#" },
-      { title: "Free press India 30.06.24", file: "#" },
-      { title: "Free press India 31.12.23", file: "#" },
-      { title: "Free press India 30.09.23", file: "#" },
-      { title: "Free press India 30.06.23", file: "#" },
-    ]
-
-  },
-  {
-    title: "English Publications - Notice to Shareholders",
-    reports: [
-      { title: "Free press India 30.06.25", file: "#" },
-      { title: "Free press India 31.12.24", file: "#" },
-      { title: "Free press India 30.09.24", file: "#" },
-      { title: "Free press India 30.06.24", file: "#" },
-    ]
-
-  },
-  {
-    title: "Hindi Publications - Notice to Shareholders",
-    reports: [
-      { title: "Free press India 30.06.25", file: "#" },
-      { title: "Free press India 31.12.24", file: "#" },
-      { title: "Free press India 30.09.24", file: "#" },
-      { title: "Free press India 30.06.24", file: "#" },
-    ]
-
-  }
-]
-
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 const NewspaperPublication = () => {
   const [openIndex, setOpenIndex] = useState(null);
-  const [showAddModel, setShowModel] = useState(false)
+  const [showAddModel, setShowModel] = useState(false);
+  const [data, setData] = useState([]);
+  const [editingSection, setEditingSection] = useState(null);
 
-  const initialValues = {
-    title: "",
-    reports: [{ newspaperName: "", date: "", file: null }],
-  }
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("Section title is required"), // Section ka title
+    reports: Yup.array().of(
+      Yup.object().shape({
+        newspaper_name: Yup.string().required("Newspaper Name is required"),
+        date: Yup.date()
+          .required("Date is required")
+          .typeError("Invalid date format"),
+        file: Yup.mixed()
+          .required("PDF file is required")
+          .test(
+            "fileFormat",
+            "Only PDF files are allowed",
+            (value) =>
+              !value ||
+              (value.name && value.name.toLowerCase().endsWith(".pdf"))
+          ),
+      })
+    ),
+  });
+
+  const initialValues = editingSection
+    ? {
+        title: editingSection.title,
+        reports: editingSection.entries.map((entry) => ({
+          id: entry.id, // existing entry id
+          title: entry.data.title,
+          newspaper_name: entry.data.newspaper_name,
+          date: entry.data.date,
+          file: null, // agar user upload kare to replace
+          existingFile: entry.data.file, // download ke liye
+        })),
+      }
+    : {
+        title: "",
+        reports: [{ title: "", newspaper_name: "", date: "", file: null }],
+      };
 
   const toggleCategory = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const getNewsPaper = async () => {
+    try {
+      const response = await axios.get(
+        "https://shyamg-api.desginersandme.com/public/api/user/newspapers/sections/full"
+      );
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching newspaper sections:", error);
+    }
+  };
+
+  useEffect(() => {
+    getNewsPaper();
+  }, []);
+
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      if (editingSection) {
+        // UPDATE entries API
+        const payload = {
+          entries: values.reports.map((report, idx) => ({
+            id: report.id, // existing entry
+            data: {
+              title: report.title || values.title,
+              newspaper_name: report.newspaper_name,
+              date: report.date,
+              file: report.file || report.existingFile,
+            },
+            position: idx + 1,
+          })),
+        };
+
+        await axios.post(
+          `https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/${editingSection.id}/entries/bulk`,
+          payload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        toast.success("Entries updated successfully!");
+      } else {
+        // CREATE new section + entries
+        const formData = new FormData();
+        formData.append("title", values.title);
+        formData.append("position", 1);
+
+        values.reports.forEach((report, index) => {
+          formData.append(
+            `entries[${index}][data][title]`,
+            report.title || values.title
+          );
+          formData.append(
+            `entries[${index}][data][newspaper_name]`,
+            report.newspaper_name
+          );
+          formData.append(`entries[${index}][data][date]`, report.date);
+          if (report.file)
+            formData.append(`entries[${index}][data][file]`, report.file);
+          formData.append(`entries[${index}][position]`, index + 1);
+        });
+
+        await axios.post(
+          "https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/with-entries",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        toast.success("Section and entries created successfully!");
+      }
+
+      resetForm();
+      setShowModel(false);
+      setEditingSection(null);
+      getNewsPaper(); // refresh list
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit");
+    }
+  };
+
+  const deleteEntry = async (sectionId, entryId) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/${sectionId}/entries/${entryId}`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        toast.success("Entry deleted successfully!");
+        console.log("Deleted Entry Response:", response.data);
+        // Optionally: Refresh your list after delete
+        getNewsPaper();
+      } catch (error) {
+        console.error("Error deleting entry:", error);
+        const message =
+          error.response?.data?.message ||
+          error.response?.data?.errors?.[0]?.message ||
+          error.message ||
+          "Failed to delete entry";
+        toast.error(message);
+      }
+    }
+  };
+
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex justify-end my-3">
-        <h4 onClick={() => setShowModel(true)} className="px-4 py-1 bg-[#FFAD00] rounded-sm  cursor-pointer">Add News </h4>
+        <h4
+          onClick={() => setShowModel(true)}
+          className="px-4 py-1 bg-[#FFAD00] rounded-sm cursor-pointer"
+        >
+          Add News
+        </h4>
       </div>
       <div className="w-full">
-        {categories.map((cat, idx) => (
-          <div key={idx} className=" border border-gray-300">
-            {/* Header Row */}
+        {data.map((cat, idx) => (
+          <div key={idx} className="border border-gray-300">
             <div
               onClick={() => toggleCategory(idx)}
-              className="flex justify-between items-center bg-[#F4F4F4 px-4 py-3 cursor-pointer font-semibold hover:bg-gray-100"
+              className="flex justify-between items-center bg-[#F4F4F4] px-4 py-3 cursor-pointer font-semibold hover:bg-gray-100"
             >
               <span>{cat.title}</span>
               {openIndex === idx ? <FaMinus /> : <FaPlus />}
             </div>
 
-            {/* Dropdown Content */}
             {openIndex === idx && (
               <div className="w-full border border-gray-300 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full border border-gray-200 text-sm">
-                    {/* Head */}
                     <thead>
                       <tr className="bg-[#F4F4F4] text-left font-semibold">
-                        <th className="px-4 py-2 border-b border-gray-300">Title</th>
-                        <th className="px-4 py-2 border-b border-gray-300">Download</th>
-                        <th className="px-4 py-2 border-b border-gray-300">Actions</th>
+                        <th className="px-4 py-2 border-b border-gray-300">
+                          Title
+                        </th>
+                        <th className="px-4 py-2 border-b border-gray-300">
+                          Download
+                        </th>
+                        <th className="px-4 py-2 border-b border-gray-300">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
-
-                    {/* Body */}
                     <tbody>
-                      {cat.reports.map((report, rIdx) => (
-                        <tr
-                          key={rIdx}
-                          className={rIdx % 2 !== 0 ? "bg-[#FAFAFA]" : "bg-white"}
-                        >
-                          {/* Report Title */}
-                          <td className="px-4 py-2 border-b border-gray-200">
-                            {report.title}
-                          </td>
-
-                          {/* Download */}
-                          <td className="px-4 py-2 border-b border-gray-200">
-                            <a
-                              href={report.file}
-                              download
-                              className="bg-yellow-500 text-white px-4 py-1 rounded flex items-center gap-2 hover:bg-yellow-600 w-fit"
-                            >
-                              Download <FaDownload />
-                            </a>
-                          </td>
-
-                          {/* Actions */}
-                          <td className="px-4 py-2 border-b border-gray-200">
-                            <div className="flex gap-3 text-lg text-gray-700">
-                              <button className="hover:text-blue-600">
-                                <FaEdit />
-                              </button>
-                              <button className="hover:text-red-600">
-                                <MdDelete />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                      {Array.isArray(cat.entries) &&
+                        cat.entries.map((entry, rIdx) => (
+                          <tr
+                            key={entry.id}
+                            className={
+                              rIdx % 2 !== 0 ? "bg-[#FAFAFA]" : "bg-white"
+                            }
+                          >
+                            <td className="px-4 py-2 border-b border-gray-200">
+                              {entry.data.title}
+                            </td>
+                            <td className="px-4 py-2 border-b border-gray-200">
+                              <a
+                                href={entry.data.file}
+                                download
+                                className="bg-yellow-500 text-white px-4 py-1 rounded flex items-center gap-2 hover:bg-yellow-600 w-fit"
+                              >
+                                Download <FaDownload />
+                              </a>
+                            </td>
+                            <td className="px-4 py-2 border-b border-gray-200">
+                              <div className="flex gap-3 text-lg text-gray-700">
+                                <button
+                                  className="hover:text-blue-600"
+                                  onClick={() => {
+                                    setEditingSection(cat); // pura section object
+                                    setShowModel(true); // modal open
+                                  }}
+                                >
+                                  <FaEdit />
+                                </button>
+                                <button
+                                  className="hover:text-red-600"
+                                  onClick={() => deleteEntry(cat.id, entry.id)}
+                                >
+                                  <MdDelete />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
-
               </div>
             )}
-
           </div>
         ))}
       </div>
 
-
-      {
-        showAddModel && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-            <div className="bg-white w-[90%] max-h-[80vh] max-w-6xl rounded-xl shadow-lg p-6 overflow-y-auto relative">
-              {/* Header */}
-              <div className="flex justify-between items-center mb-6 pb-3">
-                <h2 className="text-2xl font-bold text-gray-800">Add Newspaper Publication</h2>
-                <button
-                  onClick={() => setShowModel(false)}
-                  className="p-2 rounded-full hover:bg-gray-100 transition"
-                >
-                  <FiX size={22} className="text-gray-600" />
-                </button>
-              </div>
-
-              {/* Form */}
-             <Formik
-  initialValues={initialValues}
-  // validationSchema={validationSchema} 
-  // onSubmit={handleSubmit}
->
-  {({ setFieldValue, values }) => (
-    <Form style={{flexDirection:"column"}} className="flex flex-col gap-5">
-      {/* Title */}
-      <div>
-        <label className="block mb-1 font-medium text-gray-700">Title</label>
-        <Field
-          type="text"
-          name="title"
-          placeholder="Enter title"
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-        />
-        <ErrorMessage
-          name="title"
-          component="div"
-          className="text-red-500 text-sm mt-1"
-        />
-      </div>
-
-       {/* Reports */}
-                          <FieldArray name="reports">
-                            {({ push, remove }) => (
-                              <div style={{ flexDirection: "column" }} className="flex flex-col gap-4">
-                                {values.reports.map((_, index) => (
-                                  <div
-                                    key={index}
-                                    className="border border-gray-200 rounded-lg p-4 bg-gray-50"
-                                  >
-                                    {/* Newspaper Name */}
-      <div>
-        <label className="block mb-1 font-medium text-gray-700">
-          Newspaper Name
-        </label>
-        <Field
-          type="text"
-          name={`reports.${index}.newspaperName`}
-          placeholder="Enter newspaper name"
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-        />
-        <ErrorMessage
-          name={`reports.${index}.newspaperName`}
-          component="div"
-          className="text-red-500 text-sm mt-1"
-        />
-      </div>
-
-      {/* Date */}
-      <div>
-        <label className="block mb-1 font-medium text-gray-700">Date</label>
-        <Field
-          type="date"
-          name={`reports.${index}.date`}
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-        />
-        <ErrorMessage
-          name={`reports.${index}.date`}
-          component="div"
-          className="text-red-500 text-sm mt-1"
-        />
-      </div>
-                                    
-      
-                                    {/* File Upload */}
-                                    <div>
-                                      <label className="block mb-1 font-medium text-gray-700">
-                                        Upload File (PDF)
-                                      </label>
-                                      <input
-                                        type="file"
-                                        // accept="application/pdf"
-                                        onChange={(event) =>
-                                          setFieldValue(
-                                            `reports.${index}.file`,
-                                            event.currentTarget.files[0]
-                                          )
-                                        }
-                                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-                                      />
-                                      <ErrorMessage
-                                        name={`reports.${index}.file`}
-                                        component="div"
-                                        className="text-red-500 text-sm mt-1"
-                                      />
-                                    </div>
-      
-                                    {/* Remove Button */}
-                                    {index > 0 && (
-                                      <button
-                                        type="button"
-                                        className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                                        onClick={() => remove(index)}
-                                      >
-                                        Remove
-                                      </button>
-                                    )}
-                                  </div>
-                                ))}
-                                {/* Add More */}
-                                <button
-                                  type="button"
-                                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit "
-                                  onClick={() => push({ type: "", file: null })}
-                                >
-                                  + Add More
-                                </button>
-      
-                              </div>
-                            )}
-                          </FieldArray>
-
-     
-
-      
-
-      {/* File Upload */}
-      {/* <div>
-        <label className="block mb-1 font-medium text-gray-700">
-          Upload File (PDF)
-        </label>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(event) =>
-            setFieldValue("file", event.currentTarget.files[0])
-          }
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-        />
-        <ErrorMessage
-          name="file"
-          component="div"
-          className="text-red-500 text-sm mt-1"
-        />
-      </div> */}
-
-      {/* Submit */}
-      <button
-        type="submit"
-        className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium"
-      >
-        Submit
-      </button>
-    </Form>
-  )}
-</Formik>
-
+      {showAddModel && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+          <div className="bg-white w-[90%] max-h-[80vh] max-w-6xl rounded-xl shadow-lg p-6 overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-6 pb-3">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Add Newspaper Publication
+              </h2>
+              <button
+                onClick={() => setShowModel(false)}
+                className="p-2 rounded-full hover:bg-gray-100 transition"
+              >
+                <FiX size={22} className="text-gray-600" />
+              </button>
             </div>
-          </div>
-        )
-      }
 
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ setFieldValue, values }) => (
+                <Form className=" gap-5">
+                  <div>
+                    <label className="block mb-1 font-medium text-gray-700">
+                      Title
+                    </label>
+                    <Field
+                      type="text"
+                      name="title"
+                      placeholder="Enter title"
+                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                    />
+                    <ErrorMessage
+                      name="title"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <FieldArray name="reports">
+                    {({ push, remove }) => (
+                      <div className=" gap-4 mt-2">
+                        {values.reports.map((_, index) => (
+                          <div
+                            key={index}
+                            className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                          >
+                            <div>
+                              <label className="block mb-1 font-medium text-gray-700">
+                                Newspaper Name
+                              </label>
+                              <Field
+                                type="text"
+                                name={`reports.${index}.newspaper_name`}
+                                placeholder="Enter newspaper name"
+                                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                              />
+                              <ErrorMessage
+                                name={`reports.${index}.newspaper_name`}
+                                component="div"
+                                className="text-red-500 text-sm mt-1"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium text-gray-700">
+                                Date
+                              </label>
+                              <Field
+                                type="date"
+                                name={`reports.${index}.date`}
+                                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                              />
+                              <ErrorMessage
+                                name={`reports.${index}.date`}
+                                component="div"
+                                className="text-red-500 text-sm mt-1"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block mb-1 font-medium text-gray-700">
+                                Upload File (PDF)
+                              </label>
+                              <input
+                                type="file"
+                                onChange={(event) =>
+                                  setFieldValue(
+                                    `reports.${index}.file`,
+                                    event.currentTarget.files[0]
+                                  )
+                                }
+                                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
+                              />
+                              <ErrorMessage
+                                name={`reports.${index}.file`}
+                                component="div"
+                                className="text-red-500 text-sm mt-1"
+                              />
+                            </div>
+
+                            {index > 0 && (
+                              <button
+                                type="button"
+                                className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                                onClick={() => remove(index)}
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit mt-2"
+                          onClick={() =>
+                            push({
+                              title: "",
+                              newspaper_name: "",
+                              date: "",
+                              file: null,
+                            })
+                          }
+                        >
+                          + Add More
+                        </button>
+                      </div>
+                    )}
+                  </FieldArray>
+                  <button
+                    type="submit"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium mt-2"
+                  >
+                    {editingSection ? "Update" : "Submit"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+      )}
     </>
   );
 };

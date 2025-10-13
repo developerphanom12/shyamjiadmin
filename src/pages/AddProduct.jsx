@@ -9,14 +9,14 @@ import useProducts from "../hooks/products/useProducts";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const { addProduct , fetchCategories , categories, setCategories } = useProducts();
+  const { addProduct, fetchCategories, categories, setCategories } = useProducts();
   // const [categories, setCategories] = useState(["Snacks", "Chips"]);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  const [initialValues, setInitialValues] = useState({
+  const initialValues = {
     id: null,
     name: "",
     slang: "",
@@ -40,8 +40,8 @@ const AddProduct = () => {
     label: "none",
     isAddingCategory: false,
     newCategory: "",
-  });
- 
+  }
+
 
   // Yup schema
   const validationSchema = Yup.object({
@@ -49,9 +49,9 @@ const AddProduct = () => {
     image: Yup.mixed().required("Image is required"),
     // rating: Yup.number().required("Rating is required"),
     rating: Yup.number()
-  .min(1, "Please give at least 1 star") // minimum 1 star required
-  .max(5, "Rating cannot be more than 5") // optional but good
-  .required("Rating is required"),
+      .min(1, "Please give at least 1 star") // minimum 1 star required
+      .max(5, "Rating cannot be more than 5") // optional but good
+      .required("Rating is required"),
 
     // slang: Yup.string().required("Slang is required"),
     price: Yup.string().required("Price is required"),
@@ -81,6 +81,19 @@ const AddProduct = () => {
 
     if (values.image) {
       formData.append("product_image", values.image); // 
+    }
+
+    if (values.leftBgImage && values.leftBgImage instanceof File) {
+      formData.append("left_bg_image", values.leftBgImage);
+    }
+    if (values.rightBgImage && values.rightBgImage instanceof File) {
+      formData.append("right_bg_image", values.rightBgImage);
+    }
+    if (values.leftFooterImage && values.leftFooterImage instanceof File) {
+      formData.append("left_footer_image", values.leftFooterImage);
+    }
+    if (values.rightFooterImage && values.rightFooterImage instanceof File) {
+      formData.append("right_footer_image", values.rightFooterImage);
     }
 
     try {
@@ -153,7 +166,7 @@ const AddProduct = () => {
                     className={`label-btn ${values.label === "popular" ? "active" : ""}`}
                     onClick={() => setFieldValue("label", "popular")}
                   >
-                    POPULAR 
+                    POPULAR
                   </span>
                 </div>
               </div>
@@ -206,100 +219,100 @@ const AddProduct = () => {
               <div className="grid-images">
                 <div className="image-wrapper">
 
-                {/* Left BG Image */}
-                <div>
-                  <label htmlFor="leftBgImageInput"> Left BG Image</label>
-                  <div className="product-image" onClick={() => document.getElementById("leftBgImageInput").click()}>
-                    {values.leftBgImagePreview ? (
-                      <img src={values.leftBgImagePreview} alt="Left BG" />
-                    ) : (
-                      <div className="no-image">Left BG Image</div>
-                    )}
-                    <input
-                      id="leftBgImageInput"
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setFieldValue("leftBgImage", file);
-                          setFieldValue("leftBgImagePreview", URL.createObjectURL(file));
-                        }
-                      }}
-                    />
+                  {/* Left BG Image */}
+                  <div>
+                    <label htmlFor="leftBgImageInput"> Left BG Image</label>
+                    <div className="product-image" onClick={() => document.getElementById("leftBgImageInput").click()}>
+                      {values.leftBgImagePreview ? (
+                        <img src={values.leftBgImagePreview} alt="Left BG" />
+                      ) : (
+                        <div className="no-image">Left BG Image</div>
+                      )}
+                      <input
+                        id="leftBgImageInput"
+                        type="file"
+                        hidden
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("leftBgImage", file);
+                            setFieldValue("leftBgImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <label htmlFor="rightBgImageInput"> Right BG Image</label>
-                  {/* Right BG Image */}
-                  <div className="product-image" onClick={() => document.getElementById("rightBgImageInput").click()}>
-                    {values.rightBgImagePreview ? (
-                      <img src={values.rightBgImagePreview} alt="Right BG" />
-                    ) : (
-                      <div className="no-image">Right BG Image</div>
-                    )}
-                    <input
-                      id="rightBgImageInput"
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setFieldValue("rightBgImage", file);
-                          setFieldValue("rightBgImagePreview", URL.createObjectURL(file));
-                        }
-                      }}
-                    />
+                  <div>
+                    <label htmlFor="rightBgImageInput"> Right BG Image</label>
+                    {/* Right BG Image */}
+                    <div className="product-image" onClick={() => document.getElementById("rightBgImageInput").click()}>
+                      {values.rightBgImagePreview ? (
+                        <img src={values.rightBgImagePreview} alt="Right BG" />
+                      ) : (
+                        <div className="no-image">Right BG Image</div>
+                      )}
+                      <input
+                        id="rightBgImageInput"
+                        type="file"
+                        hidden
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("rightBgImage", file);
+                            setFieldValue("rightBgImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <label htmlFor="leftFooterImageInput"> Left Footer Image</label>
-                  {/* Left Footer Image */}
-                  <div className="product-image" onClick={() => document.getElementById("leftFooterImageInput").click()}>
-                    {values.leftFooterImagePreview ? (
-                      <img src={values.leftFooterImagePreview} alt="Left Footer" />
-                    ) : (
-                      <div className="no-image">Left Footer Image</div>
-                    )}
-                    <input
-                      id="leftFooterImageInput"
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setFieldValue("leftFooterImage", file);
-                          setFieldValue("leftFooterImagePreview", URL.createObjectURL(file));
-                        }
-                      }}
-                    />
+                  <div>
+                    <label htmlFor="leftFooterImageInput"> Left Footer Image</label>
+                    {/* Left Footer Image */}
+                    <div className="product-image" onClick={() => document.getElementById("leftFooterImageInput").click()}>
+                      {values.leftFooterImagePreview ? (
+                        <img src={values.leftFooterImagePreview} alt="Left Footer" />
+                      ) : (
+                        <div className="no-image">Left Footer Image</div>
+                      )}
+                      <input
+                        id="leftFooterImageInput"
+                        type="file"
+                        hidden
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("leftFooterImage", file);
+                            setFieldValue("leftFooterImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <label htmlFor="rightFooterImageInput"> Right Footer Image</label>
-                  {/* Right Footer Image */}
-                  <div className="product-image" onClick={() => document.getElementById("rightFooterImageInput").click()}>
-                    {values.rightFooterImagePreview ? (
-                      <img src={values.rightFooterImagePreview} alt="Right Footer" />
-                    ) : (
-                      <div className="no-image">Right Footer Image</div>
-                    )}
-                    <input
-                      id="rightFooterImageInput"
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setFieldValue("rightFooterImage", file);
-                          setFieldValue("rightFooterImagePreview", URL.createObjectURL(file));
-                        }
-                      }}
-                    />
+                  <div>
+                    <label htmlFor="rightFooterImageInput"> Right Footer Image</label>
+                    {/* Right Footer Image */}
+                    <div className="product-image" onClick={() => document.getElementById("rightFooterImageInput").click()}>
+                      {values.rightFooterImagePreview ? (
+                        <img src={values.rightFooterImagePreview} alt="Right Footer" />
+                      ) : (
+                        <div className="no-image">Right Footer Image</div>
+                      )}
+                      <input
+                        id="rightFooterImageInput"
+                        type="file"
+                        hidden
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("rightFooterImage", file);
+                            setFieldValue("rightFooterImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
 
                 </div>
 
