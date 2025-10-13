@@ -9,7 +9,7 @@ import useProducts from "../hooks/products/useProducts";
 const EditProduct = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { fetchProductById, productDetails, updateProduct , fetchCategories, categories , setCategories } = useProducts();
+  const { fetchProductById, productDetails, updateProduct, fetchCategories, categories, setCategories } = useProducts();
 
   // const [categories, setCategories] = useState(["Snacks", "Chips"]);
   useEffect(() => {
@@ -47,18 +47,53 @@ const EditProduct = () => {
     advantages: productDetails?.product_advantages || "",
     categories: productDetails?.product_category || "",
     colorCode: productDetails?.color_code || "",
-    image: productDetails?.product_image || null, // file will go here
-    previewImage: productDetails?.image_url || "", // just for preview
+    image: productDetails?.product_image || null,
+    previewImage: productDetails?.image_url || "",
     rating: productDetails?.product_rating || 0,
     label: productDetails?.product_label || "none",
     isAddingCategory: false,
     newCategory: "",
+    leftBgImage: null,
+    rightBgImage: null,
+    leftFooterImage: null,
+    rightFooterImage: null,
+    leftBgImagePreview: productDetails?.left_bg_image_url || "",
+    rightBgImagePreview: productDetails?.right_bg_image_url || "",
+    leftFooterImagePreview: productDetails?.left_footer_image_url || "",
+    rightFooterImagePreview: productDetails?.right_footer_image_url || "",
   };
 
   // handle save with API integration
+  // const handleSubmit = async (values) => {
+  //   const formData = new FormData();
+  //   formData.append("_method" , "PUT");
+  //   formData.append("product_name", values.name);
+  //   formData.append("product_slang", values.slang);
+  //   formData.append("product_price", values.price);
+  //   formData.append("product_description", values.description);
+  //   formData.append("product_ingredient", values.ingredient);
+  //   formData.append("product_advantages", values.advantages);
+  //   formData.append("product_category", values.categories);
+  //   formData.append("color_code", values.colorCode);
+  //   formData.append("product_rating", values.rating);
+  //   formData.append("product_label", values.label);
+
+  //    // ✅ Only append image if it's a File (not just URL string)
+  // if (values.image && values.image instanceof File) {
+  //   formData.append("product_image", values.image);
+  // }
+
+  //   try {
+  //     await updateProduct(id, formData);
+  //     navigate("/products");
+  //   } catch (err) {
+  //     console.error("Error updating product:", err);
+  //   }
+  // };
+
   const handleSubmit = async (values) => {
     const formData = new FormData();
-    formData.append("_method" , "PUT");
+    formData.append("_method", "PUT");
     formData.append("product_name", values.name);
     formData.append("product_slang", values.slang);
     formData.append("product_price", values.price);
@@ -70,10 +105,21 @@ const EditProduct = () => {
     formData.append("product_rating", values.rating);
     formData.append("product_label", values.label);
 
-     // ✅ Only append image if it's a File (not just URL string)
-  if (values.image && values.image instanceof File) {
-    formData.append("product_image", values.image);
-  }
+    if (values.image && values.image instanceof File) {
+      formData.append("product_image", values.image);
+    }
+    if (values.leftBgImage && values.leftBgImage instanceof File) {
+      formData.append("left_bg_image", values.leftBgImage);
+    }
+    if (values.rightBgImage && values.rightBgImage instanceof File) {
+      formData.append("right_bg_image", values.rightBgImage);
+    }
+    if (values.leftFooterImage && values.leftFooterImage instanceof File) {
+      formData.append("left_footer_image", values.leftFooterImage);
+    }
+    if (values.rightFooterImage && values.rightFooterImage instanceof File) {
+      formData.append("right_footer_image", values.rightFooterImage);
+    }
 
     try {
       await updateProduct(id, formData);
@@ -115,46 +161,41 @@ const EditProduct = () => {
                 <span className="label-text">Product Label</span>
                 <div className="label-buttons">
                   <span
-                    className={`label-btn ${
-                      values.label === "none" ? "active" : ""
-                    }`}
+                    className={`label-btn ${values.label === "none" ? "active" : ""
+                      }`}
                     onClick={() => setFieldValue("label", "none")}
                   >
                     NONE
                   </span>
-                   <span
-                    className={`label-btn ${
-                      values.label === "best" ? "active" : ""
-                    }`}
+                  <span
+                    className={`label-btn ${values.label === "best" ? "active" : ""
+                      }`}
                     onClick={() => setFieldValue("label", "best")}
                   >
                     BEST
                   </span>
                   <span
-                    className={`label-btn ${
-                      values.label === "new" ? "active" : ""
-                    }`}
+                    className={`label-btn ${values.label === "new" ? "active" : ""
+                      }`}
                     onClick={() => setFieldValue("label", "new")}
                   >
                     NEW
                   </span>
                   <span
-                    className={`label-btn ${
-                      values.label === "upcoming" ? "active" : ""
-                    }`}
+                    className={`label-btn ${values.label === "upcoming" ? "active" : ""
+                      }`}
                     onClick={() => setFieldValue("label", "upcoming")}
                   >
                     UPCOMING
                   </span>
                   <span
-                    className={`label-btn ${
-                      values.label === "popular" ? "active" : ""
-                    }`}
+                    className={`label-btn ${values.label === "popular" ? "active" : ""
+                      }`}
                     onClick={() => setFieldValue("label", "popular")}
                   >
                     POPULAR
                   </span>
-                 
+
                 </div>
               </div>
 
@@ -270,6 +311,244 @@ const EditProduct = () => {
                   />
                 </div>
 
+                <div className="form-field">
+                  <label>Left BG Image</label>
+                  {values.leftBgImagePreview ? (
+                    <div>
+                      <img src={values.leftBgImagePreview} alt="Left BG" style={{ width: 80, height: 80 }} />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            // Open file input dialog manually
+                            document.getElementById("leftBgImageInput").click();
+                          }}
+                        >
+                          Replace File
+                        </button>
+                        {/* <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            setFieldValue("leftBgImage", null);
+                            setFieldValue("leftBgImagePreview", "");
+                          }}
+                        >
+                          Remove Image
+                        </button> */}
+                      </div>
+                      {/* Hidden file input for replace */}
+                      <input
+                        id="leftBgImageInput"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("leftBgImage", file);
+                            setFieldValue("leftBgImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("leftBgImage", file);
+                            setFieldValue("leftBgImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="form-field">
+                  <label>Right BG Image</label>
+                  {values.rightBgImagePreview ? (
+                    <div>
+                      <img src={values.rightBgImagePreview} alt="Left BG" style={{ width: 80, height: 80 }} />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            // Open file input dialog manually
+                            document.getElementById("rightBgImageInput").click();
+                          }}
+                        >
+                          Replace File
+                        </button>
+                        {/* <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            setFieldValue("rightBgImage", null);
+                            setFieldValue("rightBgImagePreview", "");
+                          }}
+                        >
+                          Remove Image
+                        </button> */}
+                      </div>
+                      {/* Hidden file input for replace */}
+                      <input
+                        id="rightBgImageInput"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("rightBgImage", file);
+                            setFieldValue("rightBgImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("rightBgImage", file);
+                            setFieldValue("rightBgImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="form-field">
+                  <label>Left Footer Image</label>
+                  {values.leftFooterImagePreview ? (
+                    <div>
+                      <img src={values.leftFooterImagePreview} alt="Left Footer" style={{ width: 80, height: 80 }} />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            document.getElementById("leftFooterImageInput").click();
+                          }}
+                        >
+                          Replace File
+                        </button>
+                        {/* <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            setFieldValue("leftFooterImage", null);
+                            setFieldValue("leftFooterImagePreview", "");
+                          }}
+                        >
+                          Remove Image
+                        </button> */}
+                      </div>
+                      <input
+                        id="leftFooterImageInput"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("leftFooterImage", file);
+                            setFieldValue("leftFooterImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("leftFooterImage", file);
+                            setFieldValue("leftFooterImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="form-field">
+                  <label>Right Footer Image</label>
+                  {values.rightFooterImagePreview ? (
+                    <div>
+                      <img src={values.rightFooterImagePreview} alt="Right Footer" style={{ width: 80, height: 80 }} />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            document.getElementById("rightFooterImageInput").click();
+                          }}
+                        >
+                          Replace File
+                        </button>
+                        {/* <button
+                          type="button"
+                          className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                          onClick={() => {
+                            setFieldValue("rightFooterImage", null);
+                            setFieldValue("rightFooterImagePreview", "");
+                          }}
+                        >
+                          Remove Image
+                        </button> */}
+                      </div>
+                      <input
+                        id="rightFooterImageInput"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("rightFooterImage", file);
+                            setFieldValue("rightFooterImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setFieldValue("rightFooterImage", file);
+                            setFieldValue("rightFooterImagePreview", URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+
+
                 {/* Product Name */}
                 <div className="form-field">
                   <label>Product Name</label>
@@ -361,6 +640,8 @@ const EditProduct = () => {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
+
+
               </div>
             </div>
           </Form>
