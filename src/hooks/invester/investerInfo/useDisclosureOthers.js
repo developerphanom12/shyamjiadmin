@@ -6,24 +6,23 @@ import conf from "../../../config";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { confirmAlert } from "../../../utils/alertToast";
-import { getStockExchangeDisclosure30Info } from "../../../state/investor/inverstorState";
+import {getStockExchangeDisclosureOthersInfo } from "../../../state/investor/inverstorState";
 
-const useStockExchangeDisclosure30 = () => {
+const useStockExchangeDisclosureOthers = () => {
   const [fetchData] = useFetch();
   const [loading, setLoading] = useState(false)
-  const [stockExchangeDisclosure30 , setStockExchangeDisclosure30] = useRecoilState(getStockExchangeDisclosure30Info);
-  const [stockExchangeDisclosure30Details , setStockExchangeDisclosure30Details] = useState({})
-
-  const fetchStockExchangeDisclosure30 = async () => {
+  const [stockExchangeDisclosureOthers , setStockExchangeDisclosureOthers] = useRecoilState(getStockExchangeDisclosureOthersInfo);
+  const [stockExchangeDisclosureOthersDetails , setStockExchangeDisclosureOthersDetails] = useState({})
+  const fetchStockExchangeDisclosureOthers = async () => {
     setLoading(true);
     try {
       const res = await fetchData({
         method: "GET",
-        url: `${conf.apiBaseUrl}user/reg30/sections/full`,
+        url: `${conf.apiBaseUrl}user/reg30-others/sections/full`,
       });
       if (res?.data) {
-        setStockExchangeDisclosure30(res?.data);
-        console.log("All Stock Exchange Disclosure 30", res?.data);
+        setStockExchangeDisclosureOthers(res?.data);
+        console.log("All Stock Exchange Disclosure Others", res?.data);
         setLoading(false);
       }
     } catch (error) {
@@ -32,19 +31,19 @@ const useStockExchangeDisclosure30 = () => {
     }
   };
 
-  const addStockExchangeDisclosure30Title = async (data) => {
+  const addStockExchangeDisclosureOthersTitle = async (data) => {
     setLoading(true);
     try {
       const res = await fetchData({
         method: "POST",
-        url: `${conf.apiBaseUrl}admin/reg30/sections/with-entries`,
+        url: `${conf.apiBaseUrl}admin/reg30-others/sections/with-entries`,
         data,
       });
       if (res?.message === "Created") {
         toast.success("Added Successfully");
         console.log("response create", res);
         setLoading(false);
-        fetchStockExchangeDisclosure30()
+        fetchStockExchangeDisclosureOthers()
         
       }
     } catch (error) {
@@ -54,18 +53,18 @@ const useStockExchangeDisclosure30 = () => {
     }
   };
 
-  const updateStockExchangeDisclosure30 = async (sectionId , entryId , data) => {
+  const updateStockExchangeDisclosureOthers = async (sectionId , entryId , data) => {
     try {
       const res = await fetchData({
         method: "PATCH",
-        url: `${conf.apiBaseUrl}admin/reg30/sections/${sectionId}/entries/${entryId}`,
+        url: `${conf.apiBaseUrl}admin/reg30-others/sections/${sectionId}/entries/${entryId}`,
         data,
       });
       if (res?.message === "Updated") {
           toast.success("Updated Successfully");
           console.log("response update", res);
           setLoading(false);
-          fetchStockExchangeDisclosure30()
+          fetchStockExchangeDisclosureOthers()
       }
     } catch (error) {
       console.error("Error fetching:", error);
@@ -73,7 +72,7 @@ const useStockExchangeDisclosure30 = () => {
     }
   }
 
-    const deleteStockExchangeDisclosure30 = async (sectionId , entryId) => {
+    const deleteStockExchangeDisclosureOthers = async (sectionId , entryId) => {
     const result = await confirmAlert(
       "Do you really want to delete this Entry ?"
     );
@@ -82,7 +81,7 @@ const useStockExchangeDisclosure30 = () => {
       try {
         const res = await fetchData({
           method: "DELETE",
-          url: `${conf.apiBaseUrl}admin/reg30/sections/${sectionId}/entries/${entryId}`,
+          url: `${conf.apiBaseUrl}admin/reg30-others/sections/${sectionId}/entries/${entryId}`,
         });
         if (res?.message === "Deleted") {
           Swal.fire({
@@ -91,7 +90,7 @@ const useStockExchangeDisclosure30 = () => {
             icon: "success",
             confirmButtonText: "Okay",
           });
-          fetchStockExchangeDisclosure30()
+          fetchStockExchangeDisclosureOthers()
         }
       } catch (error) {
         console.error("Error Deleting Result", error);
@@ -102,15 +101,16 @@ const useStockExchangeDisclosure30 = () => {
   
 
   return {
-    fetchStockExchangeDisclosure30,
-    loading,
-    stockExchangeDisclosure30,
-    addStockExchangeDisclosure30Title,
-    stockExchangeDisclosure30Details,
-    setStockExchangeDisclosure30Details,
-    updateStockExchangeDisclosure30,
-    deleteStockExchangeDisclosure30,
+      fetchStockExchangeDisclosureOthers,
+      loading,
+      stockExchangeDisclosureOthers,
+      addStockExchangeDisclosureOthersTitle,
+      setStockExchangeDisclosureOthersDetails,
+      stockExchangeDisclosureOthersDetails,
+      updateStockExchangeDisclosureOthers,
+      deleteStockExchangeDisclosureOthers,
+      
   }
 }
 
-export default useStockExchangeDisclosure30
+export default useStockExchangeDisclosureOthers

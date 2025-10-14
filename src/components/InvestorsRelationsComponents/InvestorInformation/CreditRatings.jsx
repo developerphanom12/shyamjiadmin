@@ -128,6 +128,7 @@ const CreditRatings = () => {
                     <div className="px-6  flex justify-center">
                       <a
                         href={data.file_url}
+                        target="_blank"
                         className="bg-[#F7BF57] hover:bg-[#E6A84A] text-black px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-colors duration-200"
                         download
                       >

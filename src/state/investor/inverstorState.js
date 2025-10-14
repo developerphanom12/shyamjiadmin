@@ -61,3 +61,15 @@ export const getStockExchangeDisclosure30Info = atom({
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
+
+export const getStockExchangeDisclosureOthersInfo = atom({
+    key: "StockExchangeDisclosureOthersList",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const getSubsidiaryFinancials = atom({
+    key: "SubsidiaryFinancialsList",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
