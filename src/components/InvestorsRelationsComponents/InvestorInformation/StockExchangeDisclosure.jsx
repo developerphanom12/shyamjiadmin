@@ -9,7 +9,7 @@ import useStockExchangeDisclosure30 from "../../../hooks/invester/investerInfo/u
 const StockExchangeDisclosure = () => {
   const [data, setData] = useState([]);
   const [openSection, setOpenSection] = useState("Postal Ballot"); // which section is open
-  const { fetchStockExchangeDisclosure30, loading, stockExchangeDisclosure30, addStockExchangeDisclosure30Title, setStockExchangeDisclosure30Details, stockExchangeDisclosure30Details, updateStockExchangeDisclosure30 } = useStockExchangeDisclosure30()
+  const { fetchStockExchangeDisclosure30, loading, stockExchangeDisclosure30, addStockExchangeDisclosure30Title, setStockExchangeDisclosure30Details, stockExchangeDisclosure30Details, updateStockExchangeDisclosure30 , deleteStockExchangeDisclosure30, } = useStockExchangeDisclosure30()
   const [showAddModel, setShowModel] = useState(false)
   const [showEditModel, setShowEditModel] = useState(false)
 
@@ -31,6 +31,13 @@ const StockExchangeDisclosure = () => {
     ),
   });
 
+  const validationSchemaUpdate = Yup.object({
+    report_type: Yup.string().required("Report type is required"),
+    url: Yup.string()
+      .required("Url is required")
+      .url("Enter a valid URL"),
+  });
+
 
   const initialValues = {
     title: "",
@@ -38,13 +45,8 @@ const StockExchangeDisclosure = () => {
   };
 
   const initialValuesUpdate = {
-    title: stockExchangeDisclosure30Details?.title || "",
-    reports: stockExchangeDisclosure30Details?.entries
-      ? stockExchangeDisclosure30Details?.entries.map(entry => ({
-        type: entry.data.report_type || "",
-        url: entry.data.file || ""
-      }))
-      : [{ type: "", url: "" }]
+    report_type: stockExchangeDisclosure30Details?.data?.report_type || "",
+    url: stockExchangeDisclosure30Details?.data?.file || "",
   }
 
   const handleSubmit = (values) => {
@@ -76,6 +78,7 @@ const StockExchangeDisclosure = () => {
         file: values.url,
       }
     }
+    updateStockExchangeDisclosure30(stockExchangeDisclosure30Details?.reg30_section_id, stockExchangeDisclosure30Details?.id, jsonData)
     setShowEditModel(false);
   }
 
@@ -184,7 +187,7 @@ const StockExchangeDisclosure = () => {
               onClick={() => toggleSection(sec.title)}
             >
               <span>{sec.title}</span>
-              {openSection === sec.title ? <FaMinus /> : <FaPlus />}
+               {openSection === sec.title ? <FaMinus /> : <FaPlus />}
             </div>
 
             {/* Section Content */}
@@ -223,17 +226,13 @@ const StockExchangeDisclosure = () => {
                           <div className="flex gap-3 text-lg text-gray-700">
                             <button className="hover:text-blue-600" onClick={() => {
                               setShowEditModel(true);
-                              setStockExchangeDisclosure30Details({
-                                // sectionId: disclosure.id,
-                                // entryId: reg30_section_id.id,
-                                ...disclosure
-                              });
+                              setStockExchangeDisclosure30Details(disclosure);
                             }}>
                               <FaEdit
                               />
                             </button>
                             <button className="hover:text-red-600">
-                              <MdDelete />
+                              <MdDelete  onClick={() => deleteStockExchangeDisclosure30(disclosure.reg30_section_id , disclosure.id)} />
                             </button>
                           </div>
                         </td>
@@ -379,7 +378,7 @@ const StockExchangeDisclosure = () => {
             <div className="bg-white w-[90%] max-h-[80vh] max-w-6xl rounded-xl shadow-lg p-6 overflow-y-auto relative">
               {/* Header */}
               <div className="flex justify-between items-center mb-6 pb-3">
-                <h2 className="text-2xl font-bold text-gray-800">Add Report</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Edit Report</h2>
                 <button
                   onClick={() => setShowEditModel(false)}
                   className="p-2 rounded-full hover:bg-gray-100 transition"
@@ -391,36 +390,19 @@ const StockExchangeDisclosure = () => {
               {/* Form */}
               <Formik
                 initialValues={initialValuesUpdate}
-                validationSchema={validationSchema}
+                validationSchema={validationSchemaUpdate}
                 onSubmit={handleSubmitUpdate}
+                enableReinitialize
               >
                 {({ values, setFieldValue }) => (
                   <Form style={{ flexDirection: "column" }} className="flex  gap-5">
 
-
-                    {/* Title */}
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700">Title</label>
-                      <Field
-                        type="text"
-                        name="title"
-                        placeholder="Enter title"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-                      />
-                      <ErrorMessage
-                        name="title"
-                        component="div"
-                        className="text-red-500 text-sm mt-1"
-                      />
-                    </div>
-
                     {/* Reports */}
-                    <FieldArray name="reports">
-                      {({ push, remove }) => (
+             
                         <div style={{ flexDirection: "column" }} className="flex flex-col gap-4">
-                          {values.reports.map((_, index) => (
+                         
                             <div
-                              key={index}
+                              
                               className="border border-gray-200 rounded-lg p-4 bg-gray-50"
                             >
                               {/* Report Type */}
@@ -430,12 +412,12 @@ const StockExchangeDisclosure = () => {
                                 </label>
                                 <Field
                                   type="text"
-                                  name={`reports.${index}.type`}
+                                  name="report_type"
                                   placeholder="Report Type"
                                   className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
                                 />
                                 <ErrorMessage
-                                  name={`reports.${index}.type`}
+                                  name="report_type"
                                   component="div"
                                   className="text-red-500 text-sm mt-1"
                                 />
@@ -448,41 +430,21 @@ const StockExchangeDisclosure = () => {
                                 </label>
                                 <Field
                                   type="text"
-                                  name={`reports.${index}.url`}
+                                  name="url"
                                   placeholder="Enter report URL"
                                   className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
                                 />
                                 <ErrorMessage
-                                  name={`reports.${index}.url`}
+                                  name="url"
                                   component="div"
                                   className="text-red-500 text-sm mt-1"
                                 />
                               </div>
 
-                              {/* Remove Button */}
-                              {index > 0 && (
-                                <button
-                                  type="button"
-                                  className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                                  onClick={() => remove(index)}
-                                >
-                                  Remove
-                                </button>
-                              )}
                             </div>
-                          ))}
-                          {/* Add More */}
-                          <button
-                            type="button"
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit "
-                            onClick={() => push({ type: "", url: "" })}
-                          >
-                            + Add More
-                          </button>
-
+                         
                         </div>
-                      )}
-                    </FieldArray>
+        
 
                     {/* Submit */}
                     <button
@@ -490,139 +452,6 @@ const StockExchangeDisclosure = () => {
                       className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium"
                     >
                       Update
-                    </button>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        )
-      }
-
-
-
-
-
-
-
-
-      {
-        showAddModel && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-            <div className="bg-white w-[90%] max-h-[80vh] max-w-6xl rounded-xl shadow-lg p-6 overflow-y-auto relative">
-              {/* Header */}
-              <div className="flex justify-between items-center mb-6 pb-3">
-                <h2 className="text-2xl font-bold text-gray-800">Add Report</h2>
-                <button
-                  onClick={() => setShowModel(false)}
-                  className="p-2 rounded-full hover:bg-gray-100 transition"
-                >
-                  <FiX size={22} className="text-gray-600" />
-                </button>
-              </div>
-
-              {/* Form */}
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-              >
-                {({ values, setFieldValue }) => (
-                  <Form style={{ flexDirection: "column" }} className="flex  gap-5">
-
-
-                    {/* Title */}
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700">Title</label>
-                      <Field
-                        type="text"
-                        name="title"
-                        placeholder="Enter title"
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-                      />
-                      <ErrorMessage
-                        name="title"
-                        component="div"
-                        className="text-red-500 text-sm mt-1"
-                      />
-                    </div>
-
-                    {/* Reports */}
-                    <FieldArray name="reports">
-                      {({ push, remove }) => (
-                        <div style={{ flexDirection: "column" }} className="flex flex-col gap-4">
-                          {values.reports.map((_, index) => (
-                            <div
-                              key={index}
-                              className="border border-gray-200 rounded-lg p-4 bg-gray-50"
-                            >
-                              {/* Report Type */}
-                              <div className="mb-3">
-                                <label className="block mb-1 font-medium text-gray-700">
-                                  Report Type
-                                </label>
-                                <Field
-                                  type="text"
-                                  name={`reports.${index}.type`}
-                                  placeholder="Report Type"
-                                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-                                />
-                                <ErrorMessage
-                                  name={`reports.${index}.type`}
-                                  component="div"
-                                  className="text-red-500 text-sm mt-1"
-                                />
-                              </div>
-
-                              {/* URL Input */}
-                              <div>
-                                <label className="block mb-1 font-medium text-gray-700">
-                                  Report URL
-                                </label>
-                                <Field
-                                  type="text"
-                                  name={`reports.${index}.url`}
-                                  placeholder="Enter report URL"
-                                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
-                                />
-                                <ErrorMessage
-                                  name={`reports.${index}.url`}
-                                  component="div"
-                                  className="text-red-500 text-sm mt-1"
-                                />
-                              </div>
-
-                              {/* Remove Button */}
-                              {index > 0 && (
-                                <button
-                                  type="button"
-                                  className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                                  onClick={() => remove(index)}
-                                >
-                                  Remove
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                          {/* Add More */}
-                          <button
-                            type="button"
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit "
-                            onClick={() => push({ type: "", url: "" })}
-                          >
-                            + Add More
-                          </button>
-
-                        </div>
-                      )}
-                    </FieldArray>
-
-                    {/* Submit */}
-                    <button
-                      type="submit"
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium"
-                    >
-                      Submit
                     </button>
                   </Form>
                 )}
