@@ -16,9 +16,10 @@ const NewspaperPublication = () => {
   const [editingSection, setEditingSection] = useState(null);
 
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("Section title is required"), // Section ka title
-    reports: Yup.array().of(
+    title: Yup.string().required("Section title is required"),
+    entries: Yup.array().of(
       Yup.object().shape({
+        title: Yup.string().required("Report title is required"),
         newspaper_name: Yup.string().required("Newspaper Name is required"),
         date: Yup.date()
           .required("Date is required")
@@ -39,18 +40,18 @@ const NewspaperPublication = () => {
   const initialValues = editingSection
     ? {
         title: editingSection.title,
-        reports: editingSection.entries.map((entry) => ({
-          id: entry.id, // existing entry id
+        entries: editingSection.entries.map((entry) => ({
+          id: entry.id,
           title: entry.data.title,
           newspaper_name: entry.data.newspaper_name,
           date: entry.data.date,
-          file: null, // agar user upload kare to replace
-          existingFile: entry.data.file, // download ke liye
+          file: null,
+          existingFile: entry.data.file,
         })),
       }
     : {
         title: "",
-        reports: [{ title: "", newspaper_name: "", date: "", file: null }],
+        entries: [{ title: "", newspaper_name: "", date: "", file: null }],
       };
 
   const toggleCategory = (index) => {
@@ -74,75 +75,59 @@ const NewspaperPublication = () => {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      if (editingSection) {
-        // UPDATE entries API
-        const payload = {
-          entries: values.reports.map((report, idx) => ({
-            id: report.id, // existing entry
-            data: {
-              title: report.title || values.title,
-              newspaper_name: report.newspaper_name,
-              date: report.date,
-              file: report.file || report.existingFile,
-            },
-            position: idx + 1,
-          })),
-        };
+      // CREATE new section + entries
+      const formData = new FormData();
+      formData.append("title", values.title); // Section title
+      formData.append("position", 1);
+      //formData.append("data[title]", "active");
+      formData.append("data[fields]", [
+        ({ key: "title", label: "Title" },
+        { key: "newspaper_name", label: "Newspaper Name" },
+        { key: "date", label: "Date" },
+        { key: "file", label: "Download" }),
+      ]);
 
-        await axios.post(
-          `https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/${editingSection.id}/entries/bulk`,
-          payload,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-            },
-          }
+      values.entries.forEach((report, index) => {
+        // Entry data
+        formData.append(`entries[${index}][data][title]`, report.newspaper_name); // Entry title
+        formData.append(
+          `entries[${index}][data][newspaper_name]`,
+          report.newspaper_name
         );
+        formData.append(`entries[${index}][data][date]`, report.date);
 
-        toast.success("Entries updated successfully!");
-      } else {
-        // CREATE new section + entries
-        const formData = new FormData();
-        formData.append("title", values.title);
-        formData.append("position", 1);
+        if (report.file) {
+          formData.append(`entries[${index}][data][file]`, report.file);
+        }
 
-        values.reports.forEach((report, index) => {
-          formData.append(
-            `entries[${index}][data][title]`,
-            report.title || values.title
-          );
-          formData.append(
-            `entries[${index}][data][newspaper_name]`,
-            report.newspaper_name
-          );
-          formData.append(`entries[${index}][data][date]`, report.date);
-          if (report.file)
-            formData.append(`entries[${index}][data][file]`, report.file);
-          formData.append(`entries[${index}][position]`, index + 1);
-        });
+        formData.append(`entries[${index}][position]`, index + 1);
+      });
 
-        await axios.post(
-          "https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/with-entries",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-            },
-          }
-        );
+      const response = await axios.post(
+        "https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/with-entries",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-        toast.success("Section and entries created successfully!");
-      }
+      toast.success("Section and entries created successfully!");
 
       resetForm();
       setShowModel(false);
       setEditingSection(null);
-      getNewsPaper(); // refresh list
+      getNewsPaper(); // Refresh list
     } catch (err) {
       console.error(err);
-      toast.error("Failed to submit");
+      const message =
+        err.response?.data?.message ||
+        err.response?.data?.errors?.[0]?.message ||
+        err.message ||
+        "Failed to submit";
+      toast.error(message);
     }
   };
 
@@ -184,6 +169,44 @@ const NewspaperPublication = () => {
       }
     }
   };
+  const deleteSection = async (sectionId) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `https://shyamg-api.desginersandme.com/public/api/admin/newspapers/sections/${sectionId}`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        toast.success("Sections deleted successfully!");
+        console.log("Deleted Section Response:", response.data);
+        // Optionally: Refresh your list after delete
+        getNewsPaper();
+      } catch (error) {
+        console.error("Error deleting entry:", error);
+        const message =
+          error.response?.data?.message ||
+          error.response?.data?.errors?.[0]?.message ||
+          error.message ||
+          "Failed to delete entry";
+        toast.error(message);
+      }
+    }
+  };
 
   return (
     <>
@@ -204,7 +227,13 @@ const NewspaperPublication = () => {
               className="flex justify-between items-center bg-[#F4F4F4] px-4 py-3 cursor-pointer font-semibold hover:bg-gray-100"
             >
               <span>{cat.title}</span>
-              {openIndex === idx ? <FaMinus /> : <FaPlus />}
+              {/* {openIndex === idx ? <FaMinus /> : <FaPlus />} */}
+              <button
+                className="hover:text-red-600"
+                onClick={() => deleteSection(cat.id)}
+              >
+                <MdDelete />
+              </button>
             </div>
 
             {openIndex === idx && (
@@ -292,7 +321,7 @@ const NewspaperPublication = () => {
 
             <Formik
               initialValues={initialValues}
-              validationSchema={validationSchema}
+              //validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
               {({ setFieldValue, values }) => (
@@ -314,10 +343,10 @@ const NewspaperPublication = () => {
                     />
                   </div>
 
-                  <FieldArray name="reports">
+                  <FieldArray name="entries">
                     {({ push, remove }) => (
                       <div className=" gap-4 mt-2">
-                        {values.reports.map((_, index) => (
+                        {values.entries.map((_, index) => (
                           <div
                             key={index}
                             className="border border-gray-200 rounded-lg p-4 bg-gray-50"
@@ -328,12 +357,12 @@ const NewspaperPublication = () => {
                               </label>
                               <Field
                                 type="text"
-                                name={`reports.${index}.newspaper_name`}
+                                name={`entries.${index}.newspaper_name`}
                                 placeholder="Enter newspaper name"
                                 className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
                               />
                               <ErrorMessage
-                                name={`reports.${index}.newspaper_name`}
+                                name={`entries.${index}.newspaper_name`}
                                 component="div"
                                 className="text-red-500 text-sm mt-1"
                               />
@@ -345,11 +374,11 @@ const NewspaperPublication = () => {
                               </label>
                               <Field
                                 type="date"
-                                name={`reports.${index}.date`}
+                                name={`entries.${index}.date`}
                                 className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
                               />
                               <ErrorMessage
-                                name={`reports.${index}.date`}
+                                name={`entries.${index}.date`}
                                 component="div"
                                 className="text-red-500 text-sm mt-1"
                               />
@@ -363,14 +392,14 @@ const NewspaperPublication = () => {
                                 type="file"
                                 onChange={(event) =>
                                   setFieldValue(
-                                    `reports.${index}.file`,
+                                    `entries.${index}.file`,
                                     event.currentTarget.files[0]
                                   )
                                 }
                                 className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400"
                               />
                               <ErrorMessage
-                                name={`reports.${index}.file`}
+                                name={`entries.${index}.file`}
                                 component="div"
                                 className="text-red-500 text-sm mt-1"
                               />
