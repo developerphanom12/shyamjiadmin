@@ -3,6 +3,8 @@ import { FaChevronLeft, FaChevronRight, FaEdit } from "react-icons/fa";
 import useDistributor from "../hooks/distributor/useDistributor";
 import { MdDelete, MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 
 
 export default function Distributos() {
@@ -78,41 +80,41 @@ export default function Distributos() {
         {/* Table */}
         <div className=" overflow-x-auto ">
           <table className="min-w-[1200px] border border-[#F6F6F7] rounded-lg text-sm border-collapse">
-            <thead className="bg-[#FFFFFF] text-[#A2A1A8]">
+            <thead className="bg-[#fafafa] text-[#999]">
               <tr>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]"style={{fontWeight: "500"}} >
                   Status
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Name
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] whitespace-nowrap">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] whitespace-nowrap" style={{fontWeight: "500"}}>
                   Name of the Firm
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   State
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   District
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Town
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Already Business Brand
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] ">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] " style={{fontWeight: "500"}}>
                   Mobile Number
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Email
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]"  style={{fontWeight: "500"}}>
                   GSTIN
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] whitespace-nowrap"> Messages send by Distributors
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7] whitespace-nowrap" style={{fontWeight: "500"}}> Messages send by Distributors
                 </th>
-                <th className="px-4 py-2 text-left">Action</th>
+                <th className="px-4 py-2 text-left" style={{fontWeight: "500"}}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +172,7 @@ export default function Distributos() {
                       <button className="hover:text-red-600 text-xl cursor-pointer"
                         onClick={() => deleteDistributor(row.id)}
                         title="Delete">
-                        <MdDelete />
+                        <RiDeleteBin6Line />
                       </button>
                     </div>
                   </td>

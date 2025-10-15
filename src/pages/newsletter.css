@@ -55,7 +55,8 @@
 
 .newsletter-table th {
   font-weight: 600;
-  color: #666;
+  color: #999;
+  background-color: #fafafa;
 }
 
 .newsletter-table td.action-cell {

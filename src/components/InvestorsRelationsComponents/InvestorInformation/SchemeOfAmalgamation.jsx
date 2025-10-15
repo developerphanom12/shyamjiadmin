@@ -421,7 +421,7 @@ const SchemeOfAmalgamation = () => {
           schem.map((section, idx) => (
             <div key={idx} className="border-b border-gray-300">
               <div
-                className="flex justify-between items-center px-4 py-2 bg-white cursor-pointer hover:bg-gray-100 font-medium"
+                className="flex justify-between items-center px-4 py-2 bg-[#F3F4F6] cursor-pointer hover:bg-gray-100"
                 onClick={() => toggleSection(section.title)}
               >
                 <span>{section.title}</span>

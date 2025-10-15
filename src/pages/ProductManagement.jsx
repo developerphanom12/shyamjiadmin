@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import { RiDeleteBin6Line} from 'react-icons/ri';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import dummyProducts from '../data/dummyProducts';
 import '../pages/ProductManagement.css';

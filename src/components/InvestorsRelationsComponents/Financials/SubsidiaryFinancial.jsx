@@ -168,8 +168,8 @@ const handleSubmitUpdate = async (values) => {
         <h4 onClick={() => setShowModel(true)} className="px-4 py-1 bg-[#FFAD00] rounded-sm  cursor-pointer">Add </h4>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto p-4">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="bg-white  shadow-lg overflow-hidden border border-gray-200">
 
           {subsidiaryFinancials?.map((subsidiary, index) => (
             <div key={index} className="border-b border-gray-200 last:border-b-0">

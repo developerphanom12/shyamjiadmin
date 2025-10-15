@@ -114,7 +114,7 @@ const InvestorContact = () => {
       </div>
 
       {/* Table Layout */}
-      <div className="bg-white overflow-x-auto rounded-lg shadow border border-gray-200">
+      <div className="bg-white overflow-x-auto shadow border border-gray-200">
         <table className="min-w-full">
           <thead>
             <tr className="bg-[#F7BF57]">

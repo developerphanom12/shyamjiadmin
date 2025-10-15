@@ -9,38 +9,36 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-const data = [
-  {
-    title: "Prospectus",
-    file: "#",
-  },
-  {
-    title: "Prospectus",
-    file: "#",
-  },
-  {
-    title: "Prospectus",
-    file: "#",
-  },
-  {
-    title: "Prospectus",
-    file: "#",
-  },
-  {
-    title: "Prospectus",
-    file: "#",
-  },
-  {
-    title: "Prospectus",
-    file: "#",
-  },
-];
+// const data = [
+//   {
+//     title: "Prospectus",
+//     file: "#",
+//   },
+//   {
+//     title: "Prospectus",
+//     file: "#",
+//   },
+//   {
+//     title: "Prospectus",
+//     file: "#",
+//   },
+//   {
+//     title: "Prospectus",
+//     file: "#",
+//   },
+//   {
+//     title: "Prospectus",
+//     file: "#",
+//   },
+//   {
+//     title: "Prospectus",
+//     file: "#",
+//   },
+// ];
 
 const Prospectus = () => {
   const [showAddModel, setShowModel] = useState(false);
   const [prospectuses, setProspectuses] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [editingId, setEditingId] = useState(null);
 
   const [initialValues, setInitialValues] = useState({
@@ -61,7 +59,7 @@ const Prospectus = () => {
     try {
       const token = sessionStorage.getItem("token");
       const response = await axios.get(
-        `https://shyamg-api.desginersandme.com/public/api/admin/prospectuses?per_page=10&page=${page}`,
+        `https://shyamg-api.desginersandme.com/public/api/admin/prospectuses?per_page=1000`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +69,6 @@ const Prospectus = () => {
       );
 
       setProspectuses(response.data.data.data || []); // array
-      setTotalPages(response.data.data.last_page || 1); // pagination
     } catch (error) {
       console.error("Error fetching prospectuses:", error);
       toast.error("Failed to fetch prospectuses");
@@ -79,8 +76,8 @@ const Prospectus = () => {
   };
 
   useEffect(() => {
-    fetchProspectuses(currentPage);
-  }, [currentPage]);
+    fetchProspectuses();
+  }, []);
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
@@ -138,7 +135,7 @@ const Prospectus = () => {
       setEditingId(null);
 
       // 🔄 Refresh table **and wait** for it
-      await fetchProspectuses(currentPage);
+      await fetchProspectuses();
     } catch (error) {
       console.error(
         "Error uploading/updating prospectus:",
@@ -178,7 +175,7 @@ const Prospectus = () => {
 
         toast.success("Prospectus deleted successfully!");
         // Refresh table after delete
-        fetchProspectuses(currentPage);
+        fetchProspectuses();
       } catch (error) {
         console.error("Error deleting prospectus:", error);
         toast.error("Failed to delete prospectus");
@@ -262,25 +259,7 @@ const Prospectus = () => {
           </table>
 
           {/* Paginations */}
-          <div className="flex justify-end gap-2 mt-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-4 py-1 sm:py-2 bg-gray-300 rounded disabled:opacity-50 min-w-[75px] text-center truncate"
-            >
-              Previous
-            </button>
-
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className="px-4 py-1 sm:py-2 bg-gray-300 rounded disabled:opacity-50 min-w-[75px] text-center truncate"
-            >
-              Next
-            </button>
-          </div>
+          
         </div>
       </div>
 
