@@ -102,15 +102,15 @@ const useQuarterResult = () => {
           method: "DELETE",
           url: `${conf.apiBaseUrl}admin/quarterly-results/${id}`,
         });
-        // if (res?.success) {
-        //   Swal.fire({
-        //     title: "Deleted!",
-        //     text: res.message,
-        //     icon: "success",
-        //     confirmButtonText: "Okay",
-        //   });
-        //   fetchQuarterResult()
-        // }
+        if (res?.success) {
+          Swal.fire({
+            title: "Deleted!",
+            text: res.message,
+            icon: "success",
+            confirmButtonText: "Okay",
+          });
+          fetchQuarterResult()
+        }
         if (res) {
           toast.success("Deleted Successfully")
           fetchQuarterResult()
@@ -140,7 +140,9 @@ const useQuarterResult = () => {
             confirmButtonText: "Okay",
           });
           fetchQuarterResult()
+          toast.success("Deleted Successfully")
         }
+        
       } catch (error) {
         console.error("Error Deleting Result", error);
         setLoading(false);

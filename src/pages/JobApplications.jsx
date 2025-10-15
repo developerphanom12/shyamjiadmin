@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import conf from "../config";
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 export default function JobApplications() {
   const [data, setData] = useState([]);
@@ -133,31 +134,31 @@ export default function JobApplications() {
 
         <div className="overflow-x-auto">
           <table className="w-full border border-[#F6F6F7] rounded-lg text-sm border-collapse">
-            <thead className="bg-[#FFFFFF] text-[#A2A1A8]">
+            <thead className="bg-[#fafafa] text-[#999]" >
               <tr>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Status
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Name
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Email
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Mobile Number
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Resume
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Departments
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Town
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">Expected Salary</th>
-                <th className="px-4 py-2 text-left ">Action</th>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>Expected Salary</th>
+                <th className="px-4 py-2 text-left " style={{fontWeight: "500"}}>Action</th>
               </tr>
             </thead>
 
@@ -222,7 +223,7 @@ export default function JobApplications() {
                         />
                       )}
 
-                      <MdDelete
+                      <RiDeleteBin6Line
                         title="Delete"
                         className=" cursor-pointer text-xl hover:text-red-600"
                         onClick={() => deleteApplication(row.id)}

@@ -345,11 +345,11 @@ const NewspaperPublication = () => {
 
                   <FieldArray name="entries">
                     {({ push, remove }) => (
-                      <div className=" gap-4 mt-2">
+                      <div className=" gap-4">
                         {values.entries.map((_, index) => (
                           <div
                             key={index}
-                            className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                            className="border border-gray-200 rounded-lg p-4 bg-gray-50 mt-4"
                           >
                             <div>
                               <label className="block mb-1 font-medium text-gray-700">
@@ -404,7 +404,6 @@ const NewspaperPublication = () => {
                                 className="text-red-500 text-sm mt-1"
                               />
                             </div>
-
                             {index > 0 && (
                               <button
                                 type="button"
@@ -419,7 +418,7 @@ const NewspaperPublication = () => {
 
                         <button
                           type="button"
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit mt-2"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium w-fit mt-4"
                           onClick={() =>
                             push({
                               title: "",

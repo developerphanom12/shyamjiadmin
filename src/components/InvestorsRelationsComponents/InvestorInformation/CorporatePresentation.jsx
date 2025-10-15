@@ -9,21 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-// const data = [
-//   {
-//     title: "Corporate Presentation",
-//     file: "#"
-//   },
-//   {
-//     title: "Corporate Presentation",
-//     file: "#"
-//   },
-//   {
-//     title: "Corporate Presentation",
-//     file: "#"
-//   },
-
-// ]
 
 const CorporatePresentation = () => {
   const [showAddModel, setShowModel] = useState(false);
@@ -33,38 +18,28 @@ const CorporatePresentation = () => {
   });
 
   const [presentations, setPresentations] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [editingId, setEditingId] = useState(null); //editeing id
 
-  const fetchPresentations = async (page = 1) => {
+  const fetchPresentations = async () => {
     try {
       const token = sessionStorage.getItem("token"); // ya hardcode kar sakte ho
       const response = await axios.get(
-        `https://shyamg-api.desginersandme.com/public/api/admin/corporate-presentations`,
+        "https://shyamg-api.desginersandme.com/public/api/admin/corporate-presentations",
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
-          params: {
-            per_page: 10,
-            page: page,
-          },
         }
       );
-
-      const paginatedData = response.data.data;
-      setPresentations(paginatedData.data || []);
-      setCurrentPage(paginatedData.current_page);
-      setTotalPages(paginatedData.last_page);
+      setPresentations(response.data.data.data || []);
     } catch (error) {
       console.error("Error fetching corporate presentations:", error);
     }
   };
   useEffect(() => {
-    fetchPresentations(currentPage);
-  }, [currentPage]);
+    fetchPresentations();
+  }, []);
 
   const validationSchema = Yup.object({
     title: Yup.string().required("Title is required"),
@@ -124,7 +99,7 @@ const CorporatePresentation = () => {
       resetForm();
       setShowModel(false);
       setEditingId(null);
-      fetchPresentations(currentPage);
+      fetchPresentations();
     } catch (error) {
       console.error("Error:", error.response || error);
       toast.error(
@@ -164,7 +139,7 @@ const CorporatePresentation = () => {
 
         toast.success("CorPorate Presentation  deleted successfully!");
         // Refresh table after delete
-        fetchPresentations(currentPage);
+        fetchPresentations();
       } catch (error) {
         console.error("Error deleting CorPorate Presentation :", error);
         toast.error("Failed to delete CorPorate Presentation");
@@ -198,7 +173,7 @@ const CorporatePresentation = () => {
               </tr>
             </thead>
             <tbody>
-              {presentations.map((data, yIdx) => (
+              {Array.isArray(presentations) && presentations?.map((data, yIdx) => (
                 <tr
                   key={yIdx}
                   className={yIdx % 2 === 0 ? "bg-white" : "bg-[#F4F4F4]"}
@@ -244,26 +219,7 @@ const CorporatePresentation = () => {
             </tbody>
           </table>
         </div>
-        {/* Paginations */}
-        <div className="flex justify-end gap-2 mt-4">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-4 py-1 sm:py-2 bg-gray-300 rounded disabled:opacity-50 min-w-[75px] text-center truncate"
-          >
-            Previous
-          </button>
-
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className="px-4 py-1 sm:py-2 bg-gray-300 rounded disabled:opacity-50 min-w-[75px] text-center truncate"
-          >
-            Next
-          </button>
-        </div>
+        
       </div>
 
       {showAddModel && (

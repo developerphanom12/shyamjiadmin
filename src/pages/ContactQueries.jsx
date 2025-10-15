@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaCircle, FaEdit } from "react-icons/fa";
 import useMessages from "../hooks/message/useMessage";
 import { MdDelete, MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export default function ContactQueries() {
   // Dummy data (30 rows)
@@ -65,34 +66,34 @@ export default function ContactQueries() {
         {/* Table */}
         <div className="overflow-x-auto ">
           <table className="w-full border border-[#F6F6F7] rounded-lg text-sm border-collapse">
-            <thead className="bg-[#FFFFFF] text-[#A2A1A8] ">
+            <thead className="bg-[#fafafa] text-[#999]">
               <tr>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Status
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Name
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Email
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   State
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   City
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Town
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Mobile Number
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>
                   Subject
                 </th>
-                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]">Message</th>
-                <th className="px-4 py-2 ">Action</th>
+                <th className="px-4 py-2 text-left border-r border-[#F6F6F7]" style={{fontWeight: "500"}}>Message</th>
+                <th className="px-4 py-2 " style={{fontWeight: "500"}}>Action</th>
 
               </tr>
             </thead>
@@ -152,7 +153,7 @@ export default function ContactQueries() {
                         onClick={() => deleteMessage(row.id)}
                         title="Delete">
 
-                        <MdDelete />
+                        <RiDeleteBin6Line />
                       </button>
                     </div>
                   </td>

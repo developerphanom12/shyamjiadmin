@@ -5,9 +5,10 @@ import * as Yup from "yup";
 import { FiX } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
+import { ToastContainer } from "react-toastify";
 
 const AnnualResults = () => {
   const [data, setData] = useState([]);
@@ -56,7 +57,7 @@ const AnnualResults = () => {
       Yup.object().shape({
         title: Yup.string().required("Report title required"),
         //file: Yup.mixed(), // optional in edit
-        file: Yup.mixed().nullable()
+        file: Yup.mixed().nullable(),
       })
     ),
   });
@@ -287,8 +288,9 @@ const AnnualResults = () => {
           }
         );
 
-        // Toast success
-        toast.success("Entry deleted successfully!");
+        // // Toast success
+         toast.success("Entry deleted successfully!");
+        
 
         // UI me se entry remove kar do
         setData((prevData) =>

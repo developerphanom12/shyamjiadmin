@@ -38,7 +38,7 @@ const useDistributor = () => {
       try {
         const res = await fetchData({
           method: "DELETE",
-          url: `${conf.apiBaseUrl}admin/applications/${id}`,
+          url: `${conf.apiBaseUrl}admin/distributors/${id}`,
         });
         if (res?.message) {
           Swal.fire({
